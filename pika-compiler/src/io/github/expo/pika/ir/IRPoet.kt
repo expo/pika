@@ -1,0 +1,791 @@
+@file:OptIn(UnsafeDuringIrConstructionAPI::class)
+
+package io.github.expo.pika.ir
+
+import io.github.expo.pika.Identifiers
+import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.backend.common.ir.createExtensionReceiver
+import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
+import org.jetbrains.kotlin.descriptors.DescriptorVisibility
+import org.jetbrains.kotlin.ir.builders.declarations.addGetter
+import org.jetbrains.kotlin.ir.builders.declarations.buildProperty
+import org.jetbrains.kotlin.ir.declarations.*
+import org.jetbrains.kotlin.ir.declarations.impl.IrFactoryImpl
+import org.jetbrains.kotlin.ir.expressions.*
+import org.jetbrains.kotlin.ir.expressions.impl.*
+import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
+import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
+import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
+import org.jetbrains.kotlin.ir.symbols.impl.IrFieldSymbolImpl
+import org.jetbrains.kotlin.ir.types.*
+import org.jetbrains.kotlin.ir.util.defaultType
+import org.jetbrains.kotlin.ir.util.isObject
+import org.jetbrains.kotlin.ir.util.primaryConstructor
+import org.jetbrains.kotlin.name.ClassId
+import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
+
+class IRPoet(
+  context: IrPluginContext,
+  private val symbolFinder: SymbolFinder,
+  moduleFragment: IrModuleFragment,
+  val extraAnnotationClassIds: Set<ClassId> = emptySet(),
+) {
+  val irBuiltIns = context.irBuiltIns
+  val kotlin = Kotlin()
+
+  /**
+   * Synthetic symbol for the `kotlin.jvm.<get-java>` extension property on `KClass<*>`.
+   * The JVM backend matches this by (package, receiver, name) and codegens a bare
+   * `LDC LType;` without the `Reflection.getOrCreateKotlinClass` wrap.
+   */
+  private val kClassJavaGetter: IrSimpleFunctionSymbol = run {
+    val kotlinJvmPackage = createEmptyExternalPackageFragment(
+      moduleFragment.descriptor,
+      FqName("kotlin.jvm")
+    )
+    IrFactoryImpl.buildProperty {
+      name = Name.identifier("java")
+    }.apply {
+      parent = kotlinJvmPackage
+      addGetter().apply {
+        parameters += createExtensionReceiver(irBuiltIns.kClassClass.starProjectedType)
+        returnType = symbolFinder.javaLangClass.defaultType
+      }
+    }.getter!!.symbol
+  }
+
+  fun createReturnBody(
+    irFactory: IrFactory,
+    returnTarget: IrSimpleFunction,
+    value: IrExpression
+  ): IrBlockBody = irFactory.createBlockBody(-1, -1).apply {
+    statements.add(
+      IrReturnImpl(
+        -1,
+        -1,
+        irBuiltIns.nothingType,
+        returnTarget.symbol,
+        value
+      )
+    )
+  }
+
+  inner class Kotlin {
+    fun string(value: String) =
+      IrConstImpl.string(
+        startOffset = -1,
+        endOffset = -1,
+        type = irBuiltIns.stringType,
+        value = value
+      )
+
+    fun bool(value: Boolean) =
+      IrConstImpl.boolean(
+        startOffset = -1,
+        endOffset = -1,
+        type = irBuiltIns.booleanType,
+        value = value
+      )
+
+    fun `null`() = createIrConst(
+      startOffset = -1,
+      endOffset = -1,
+      type = irBuiltIns.nothingNType,
+      kind = IrConstKind.Null,
+      value = null
+    )
+
+    private fun buildIrCall(
+      type: IrType,
+      symbol: IrSimpleFunctionSymbol,
+      typeArgumentsCount: Int = 0,
+      origin: IrStatementOrigin? = null,
+      setup: IrCallImpl.() -> Unit = {}
+    ): IrExpression =
+      IrCallImpl(
+        -1,
+        -1,
+        type,
+        symbol,
+        typeArgumentsCount,
+        origin,
+        null
+      ).also { it.setup() }
+
+    /**
+     * {key} to {value} -> Pair<{keyType}, {valueType}>
+     */
+    fun pair(keyType: IrType, key: IrExpression, valueType: IrType, value: IrExpression): IrExpression {
+      val pairType = symbolFinder.kotlinStd.pair.typeWith(keyType, valueType)
+      return buildIrCall(pairType, symbolFinder.kotlinStd.to.first(), typeArgumentsCount = 2) {
+        typeArguments[0] = keyType
+        typeArguments[1] = valueType
+        arguments[0] = key
+        arguments[1] = value
+      }
+    }
+
+    /**
+     * mapOf<{keyType}, {valueType}>({pairs})
+     */
+    fun mapOf(keyType: IrType, valueType: IrType, pairs: List<IrExpression>): IrExpression {
+      val mapType = irBuiltIns.mapClass.typeWith(keyType, valueType)
+      val pairType = symbolFinder.kotlinStd.pair.typeWith(keyType, valueType)
+      val mapOf = symbolFinder.kotlinStd.collections.mapOf.firstSingleVarargsArgument()
+      return buildIrCall(mapType, mapOf, typeArgumentsCount = 2, origin = IrStatementOrigin.INVOKE) {
+        typeArguments[0] = keyType
+        typeArguments[1] = valueType
+        arguments[0] = IrVarargImpl(
+          startOffset = -1,
+          endOffset = -1,
+          type = irBuiltIns.arrayClass.typeWith(pairType),
+          varargElementType = pairType,
+          elements = pairs
+        )
+      }
+    }
+
+    /**
+     * emptyMap<{keyType}, {valueType}>()
+     */
+    fun emptyMap(keyType: IrType, valueType: IrType): IrExpression {
+      val mapType = irBuiltIns.mapClass.typeWith(keyType, valueType)
+      val emptyMap = symbolFinder.kotlinStd.collections.emptyMap.single()
+      return buildIrCall(mapType, emptyMap, typeArgumentsCount = 2) {
+        typeArguments[0] = keyType
+        typeArguments[1] = valueType
+      }
+    }
+
+    /**
+     * arrayOf<{type}>({elements})
+     */
+    fun arrayOf(type: IrType, elements: List<IrExpression>): IrExpression {
+      val arrayType = irBuiltIns.arrayClass.typeWith(type)
+      return IrCallImpl(
+        -1,
+        -1,
+        arrayType,
+        irBuiltIns.arrayOf,
+        typeArgumentsCount = 1,
+        origin = null
+      ).apply {
+        typeArguments[0] = type
+        arguments[0] = IrVarargImpl(-1, -1, arrayType, type, elements)
+      }
+    }
+
+    /**
+     * listOf<{type}>({elements})
+     */
+    fun listOf(type: IrType, elements: List<IrExpression>): IrExpression {
+      val listType = irBuiltIns.listClass.typeWith(type)
+      val listOf = symbolFinder.kotlinStd.collections.listOf.firstSingleVarargsArgument()
+      return buildIrCall(listType, listOf, typeArgumentsCount = 1, origin = IrStatementOrigin.INVOKE) {
+        typeArguments[0] = type
+        arguments[0] = IrVarargImpl(
+          startOffset = -1,
+          endOffset = -1,
+          type = irBuiltIns.arrayClass.typeWith(type),
+          varargElementType = type,
+          elements = elements
+        )
+      }
+    }
+
+    /**
+     * Class<{classSymbol}> — emits `KClass<{classSymbol}>.java` so the JVM backend's
+     * KClassJavaProperty intrinsic strips the KClass wrap, leaving a bare LDC.
+     */
+    fun javaClass(classSymbol: IrClassSymbol): IrExpression {
+      val classType = classSymbol.owner.defaultType
+      val kClassReference = IrClassReferenceImpl(
+        startOffset = -1,
+        endOffset = -1,
+        type = irBuiltIns.kClassClass.starProjectedType,
+        symbol = classSymbol,
+        classType = classType
+      )
+      return IrCallImpl(
+        startOffset = -1,
+        endOffset = -1,
+        type = symbolFinder.javaLangClass.typeWith(classType),
+        symbol = kClassJavaGetter,
+        typeArgumentsCount = 0,
+        origin = null,
+        superQualifierSymbol = null
+      ).apply {
+        arguments[0] = kClassReference
+      }
+    }
+  }
+
+  val pika = Pika()
+
+  inner class Pika {
+    private val IrProperty.resolvedType: IrType
+      get() = getter?.returnType ?: backingField?.type ?: irBuiltIns.anyNType
+
+    /**
+     * io.github.expo.pika.PTypeDescriptor.Star
+     */
+    fun star(): IrExpression {
+      val pTypeDescriptorStarClass = symbolFinder.pikaAPI.pTypeDescriptor.star
+
+      return IrGetObjectValueImpl(
+        startOffset = -1,
+        endOffset = -1,
+        type = pTypeDescriptorStarClass.owner.defaultType,
+        symbol = pTypeDescriptorStarClass
+      )
+    }
+
+    private fun IrClassSymbol.buildConstructorCall(
+      errorName: String,
+      setup: IrConstructorCall.() -> Unit
+    ): IrExpression {
+      val constructor = owner.primaryConstructor
+        ?: error("$errorName must have a primary constructor")
+      return IrConstructorCallImpl(
+        startOffset = -1,
+        endOffset = -1,
+        type = owner.defaultType,
+        symbol = constructor.symbol,
+        typeArgumentsCount = 0,
+        constructorTypeArgumentsCount = 0,
+        origin = null
+      ).also { it.setup() }
+    }
+
+    /**
+     * PTypeDescriptorRegistry.getOrCreateConcrete({Class<{classSymbol}>}, {isNullable}, {introspection})
+     */
+    fun concrete(
+      classSymbol: IrClassSymbol,
+      isNullable: Boolean,
+      introspection: IrExpression? = null
+    ): IrExpression {
+      val registry = symbolFinder.pikaAPI.pTypeDescriptorRegistry
+      val fnSymbol = registry.getOrCreateConcrete
+      val valueArgs = listOf(
+        kotlin.javaClass(classSymbol),
+        kotlin.bool(isNullable),
+        introspection ?: kotlin.`null`()
+      )
+      return IrCallImpl(
+        startOffset = -1,
+        endOffset = -1,
+        type = symbolFinder.pikaAPI.pTypeDescriptor.concrete.owner.defaultType,
+        symbol = fnSymbol,
+        typeArgumentsCount = 0,
+        origin = null,
+      ).apply {
+        var valueArgIdx = 0
+        fnSymbol.owner.parameters.forEach { param ->
+          when (param.kind) {
+            IrParameterKind.DispatchReceiver -> arguments[param.indexInParameters] =
+              IrGetObjectValueImpl(
+                -1,
+                -1,
+                registry.classSymbol.owner.defaultType,
+                registry.classSymbol
+              )
+
+            IrParameterKind.Regular -> arguments[param.indexInParameters] = valueArgs[valueArgIdx++]
+            else -> {}
+          }
+        }
+      }
+    }
+
+    /**
+     * PTypeDescriptorRegistry.getOrCreateParameterized(
+     *   {Class<{classSymbol}>}, {isNullable}, *{parameters}, {introspection}
+     * )
+     */
+    fun parameterized(
+      classSymbol: IrClassSymbol,
+      isNullable: Boolean,
+      parameters: List<IrExpression>,
+      introspection: IrExpression? = null
+    ): IrExpression {
+      val registry = symbolFinder.pikaAPI.pTypeDescriptorRegistry
+      val pTypeDescriptorType = symbolFinder.pikaAPI.pTypeDescriptor.root.owner.defaultType
+      val introspectionArg = introspection ?: kotlin.`null`()
+
+      val fnSymbol = registry.getOrCreateParameterized
+      val valueArgs = listOf(
+        kotlin.javaClass(classSymbol),
+        kotlin.bool(isNullable),
+        kotlin.listOf(pTypeDescriptorType, parameters),
+        introspectionArg,
+      )
+
+      return IrCallImpl(
+        startOffset = -1,
+        endOffset = -1,
+        type = symbolFinder.pikaAPI.pTypeDescriptor.parameterized.owner.defaultType,
+        symbol = fnSymbol,
+        typeArgumentsCount = 0,
+        origin = null,
+      ).apply {
+        var valueArgIdx = 0
+        fnSymbol.owner.parameters.forEach { param ->
+          when (param.kind) {
+            IrParameterKind.DispatchReceiver -> arguments[param.indexInParameters] =
+              IrGetObjectValueImpl(
+                -1,
+                -1,
+                registry.classSymbol.owner.defaultType,
+                registry.classSymbol
+              )
+
+            IrParameterKind.Regular -> arguments[param.indexInParameters] = valueArgs[valueArgIdx++]
+            else -> {}
+          }
+        }
+      }
+    }
+
+    private val simpleTypeFieldNames: Map<IrClassifierSymbol, Pair<String, String>> by lazy {
+      mapOf(
+        irBuiltIns.intClass to ("INT" to "INT_NULLABLE"),
+        irBuiltIns.longClass to ("LONG" to "LONG_NULLABLE"),
+        irBuiltIns.floatClass to ("FLOAT" to "FLOAT_NULLABLE"),
+        irBuiltIns.shortClass to ("SHORT" to "SHORT_NULLABLE"),
+        irBuiltIns.doubleClass to ("DOUBLE" to "DOUBLE_NULLABLE"),
+        irBuiltIns.stringClass to ("STRING" to "STRING_NULLABLE"),
+        irBuiltIns.booleanClass to ("BOOLEAN" to "BOOLEAN_NULLABLE"),
+      )
+    }
+
+    fun staticFieldDescriptor(fieldName: String): IrExpression {
+      val registry = symbolFinder.pikaAPI.pTypeDescriptorRegistry
+      val concreteType = symbolFinder.pikaAPI.pTypeDescriptor.concrete.owner.defaultType
+      val field = irBuiltIns.irFactory.createField(
+        startOffset = -1,
+        endOffset = -1,
+        origin = IrDeclarationOrigin.IR_EXTERNAL_DECLARATION_STUB,
+        name = Name.identifier(fieldName),
+        visibility = DescriptorVisibilities.PUBLIC,
+        symbol = IrFieldSymbolImpl(),
+        type = concreteType,
+        isFinal = true,
+        isStatic = true,
+        isExternal = false,
+      ).also { it.parent = registry.classSymbol.owner }
+      return IrGetFieldImpl(
+        startOffset = -1,
+        endOffset = -1,
+        symbol = field.symbol,
+        type = concreteType,
+        receiver = null,
+      )
+    }
+
+    private fun staticArrayField(fieldName: String, elementType: IrType, parentClass: IrClass): IrExpression {
+      val arrayType = irBuiltIns.arrayClass.typeWith(elementType)
+      val field = irBuiltIns.irFactory.createField(
+        startOffset = -1,
+        endOffset = -1,
+        origin = IrDeclarationOrigin.IR_EXTERNAL_DECLARATION_STUB,
+        name = Name.identifier(fieldName),
+        visibility = DescriptorVisibilities.PUBLIC,
+        symbol = IrFieldSymbolImpl(),
+        type = arrayType,
+        isFinal = true,
+        isStatic = true,
+        isExternal = false,
+      ).also { it.parent = parentClass }
+      return IrGetFieldImpl(-1, -1, field.symbol, arrayType, receiver = null)
+    }
+
+    fun emptyAnnotationsArray(): IrExpression =
+      staticArrayField(
+        "EMPTY_ANNOTATIONS",
+        symbolFinder.pikaAPI.pAnnotation.owner.defaultType,
+        symbolFinder.pikaAPI.pEmptyArrays.owner
+      )
+
+    fun emptyFunctionsArray(): IrExpression =
+      staticArrayField(
+        "EMPTY_FUNCTIONS",
+        symbolFinder.pikaAPI.pFunction.owner.defaultType,
+        symbolFinder.pikaAPI.pEmptyArrays.owner
+      )
+
+    /**
+     * IrType -> io.github.expo.pika.PTypeDescriptor.*
+     */
+    fun typeDescriptor(type: IrType): IrExpression {
+      val simpleType = type as? IrSimpleType
+        ?: return pika.concrete(irBuiltIns.anyClass, false)
+
+      val classifier = simpleType.classifier
+      val isNullable = simpleType.isMarkedNullable()
+
+      if (simpleType.arguments.isEmpty()) {
+        val fieldNames = simpleTypeFieldNames[classifier]
+        if (fieldNames != null) {
+          val fieldName = if (isNullable) {
+            fieldNames.second
+          } else {
+            fieldNames.first
+          }
+          return pika.staticFieldDescriptor(fieldName)
+        }
+      }
+
+      val irClass = (classifier as? IrClassSymbol)?.owner
+      val introspection = irClass?.let { buildIntrospectionCallFor(it) }
+
+      return if (simpleType.arguments.isEmpty()) {
+        pika.concrete(classifier as IrClassSymbol, isNullable, introspection)
+      } else {
+        val typeArgInfos = simpleType.arguments.map { arg ->
+          when (arg) {
+            is IrTypeProjection -> typeDescriptor(arg.type)
+            is IrStarProjection -> pika.star()
+          }
+        }
+        pika.parameterized(classifier as IrClassSymbol, isNullable, typeArgInfos, introspection)
+      }
+    }
+
+    private fun buildIntrospectionCallFor(
+      irClass: IrClass,
+      startOffset: Int = -1,
+      endOffset: Int = -1
+    ): IrExpression? {
+      if (!irClass.hasIntrospectableAnnotation(extraAnnotationClassIds)) {
+        return null
+      }
+
+      val fieldOwner = if (irClass.isObject && !irClass.isCompanion) {
+        irClass
+      } else {
+        irClass.pikaObject()
+      }
+
+      val field = fieldOwner
+        ?.declarations
+        ?.filterIsInstance<IrField>()
+        ?.find { it.name.asString() == Identifiers.INTROSPECTION_DATA_FIELD_NAME }
+        ?: return null
+
+      val pIntrospectionDataClass = symbolFinder.pikaAPI.pIntrospectionData
+      val returnType = pIntrospectionDataClass.typeWith(irClass.defaultType)
+
+      return IrGetFieldImpl(
+        startOffset = startOffset,
+        endOffset = endOffset,
+        symbol = field.symbol,
+        type = returnType,
+        receiver = null
+      )
+    }
+
+    /**
+     * io.github.expo.pika.PVisibility.{value}
+     */
+    fun pVisibility(value: DescriptorVisibility): IrExpression {
+      val visibility = when (value) {
+        DescriptorVisibilities.PUBLIC -> "PUBLIC"
+        DescriptorVisibilities.PRIVATE -> "PRIVATE"
+        DescriptorVisibilities.PROTECTED -> "PROTECTED"
+        DescriptorVisibilities.INTERNAL -> "INTERNAL"
+        else -> "PUBLIC"
+      }
+
+      val pVisibilityEnumClass = symbolFinder.pikaAPI.pVisibility
+
+      val enumEntry = pVisibilityEnumClass
+        .owner
+        .declarations
+        .filterIsInstance<IrEnumEntry>()
+        .find { it.name.asString() == visibility }
+        ?: error("Cannot find PVisibility.$value")
+
+      return IrGetEnumValueImpl(
+        startOffset = -1,
+        endOffset = -1,
+        type = pVisibilityEnumClass.owner.defaultType,
+        symbol = enumEntry.symbol
+      )
+    }
+
+    /**
+     * io.github.expo.pika.PAnnotation({jClass}, mapOf({annotationArgs}))
+     */
+    fun pAnnotation(annotation: IrConstructorCall): IrExpression {
+      val annotationClass = annotation.type.classOrNull?.owner
+      val argumentsMap = annotation.toArgsMap(this@IRPoet)
+      return symbolFinder
+        .pikaAPI
+        .pAnnotation
+        .buildConstructorCall("PAnnotation") {
+          arguments[0] = kotlin.javaClass(annotationClass?.symbol ?: irBuiltIns.anyClass)
+          arguments[1] = argumentsMap
+        }
+    }
+
+    /**
+     * io.github.expo.pika.PFunction({name}, {visibility})
+     */
+    fun pFunction(function: IrSimpleFunction): IrExpression =
+      symbolFinder
+        .pikaAPI
+        .pFunction
+        .buildConstructorCall("PFunction") {
+          arguments[0] = kotlin.string(function.name.asString())
+          arguments[1] = pika.pVisibility(function.visibility)
+        }
+
+    private fun castInstance(instanceParam: IrValueParameter, ownerType: IrType): IrExpression =
+      IrTypeOperatorCallImpl(
+        -1,
+        -1,
+        ownerType,
+        IrTypeOperator.CAST,
+        ownerType,
+        IrGetValueImpl(
+          -1,
+          -1,
+          irBuiltIns.anyNType,
+          instanceParam.symbol
+        )
+      )
+
+    /**
+     * Builds an expression that reads a property value from an instance.
+     * The instance parameter is cast from Any? to ownerType.
+     */
+    fun propertyGetExpression(
+      property: IrProperty,
+      ownerType: IrType,
+      instanceParam: IrValueParameter
+    ): IrExpression {
+      val propertyType = property.resolvedType
+      val castedInstance = castInstance(instanceParam, ownerType)
+      return if (property.getter != null) {
+        val getter = property.getter!!
+        IrCallImpl(
+          -1,
+          -1,
+          propertyType,
+          getter.symbol,
+          0,
+          IrStatementOrigin.GET_PROPERTY,
+          null
+        )
+          .apply {
+            getter.parameters.forEach { param ->
+              if (param.kind == IrParameterKind.DispatchReceiver) {
+                arguments[param.indexInParameters] = castedInstance
+              }
+            }
+          }
+      } else {
+        IrGetFieldImpl(
+          startOffset = -1, endOffset = -1,
+          symbol = property.backingField!!.symbol,
+          type = propertyType,
+          receiver = castedInstance
+        )
+      }
+    }
+
+    /**
+     * Builds an expression that writes a property value on an instance.
+     * Both instance and value parameters are cast from Any? to their target types.
+     */
+    fun propertySetExpression(
+      property: IrProperty,
+      ownerType: IrType,
+      instanceParam: IrValueParameter,
+      valueParam: IrValueParameter
+    ): IrExpression {
+      val propertyType = property.resolvedType
+      val castedInstance = castInstance(instanceParam, ownerType)
+      val castedValue = IrTypeOperatorCallImpl(
+        -1,
+        -1,
+        propertyType,
+        IrTypeOperator.CAST,
+        propertyType,
+        IrGetValueImpl(
+          -1,
+          -1,
+          irBuiltIns.anyNType,
+          valueParam.symbol
+        )
+      )
+
+      val kotlinSetter = property.setter
+      return if (kotlinSetter != null) {
+        IrCallImpl(
+          -1,
+          -1,
+          irBuiltIns.unitType,
+          kotlinSetter.symbol,
+          0,
+          IrStatementOrigin.EQ,
+          null
+        )
+          .apply {
+            kotlinSetter.parameters.forEach { param ->
+              when (param.kind) {
+                IrParameterKind.DispatchReceiver ->
+                  arguments[param.indexInParameters] = castedInstance
+                IrParameterKind.Regular ->
+                  arguments[param.indexInParameters] = castedValue
+                else -> {}
+              }
+            }
+          }
+      } else {
+        IrSetFieldImpl(
+          startOffset = -1, endOffset = -1,
+          symbol = property.backingField!!.symbol,
+          receiver = castedInstance,
+          value = castedValue,
+          type = irBuiltIns.unitType
+        )
+      }
+    }
+
+    /**
+     * io.github.expo.pika.PProperty(...)
+     */
+    fun pProperty(
+      property: IrProperty,
+      ownerClass: IrClass,
+      index: Int,
+      accessorExpr: IrExpression
+    ): IrExpression {
+      val pPropertyClass = symbolFinder.pikaAPI.pProperty
+      val pAnnotationClass = symbolFinder.pikaAPI.pAnnotation
+
+      val constructor = pPropertyClass.owner.primaryConstructor
+        ?: error("PProperty must have a primary constructor")
+
+      val annotations = property.annotations.map { annotation ->
+        pika.pAnnotation(annotation)
+      }
+
+      val hasBackingField = property.backingField != null
+      val ownerType = ownerClass.defaultType
+
+      // PProperty<OwnerType>
+      val pPropertyType = pPropertyClass.typeWith(ownerType)
+
+      return IrConstructorCallImpl(
+        startOffset = -1,
+        endOffset = -1,
+        type = pPropertyType,
+        symbol = constructor.symbol,
+        typeArgumentsCount = 1,
+        constructorTypeArgumentsCount = 1,
+        origin = null
+      ).also { call ->
+        call.typeArguments[0] = ownerType
+        call.arguments[0] = kotlin.string(property.name.asString())
+        call.arguments[1] = pika.pVisibility(property.visibility)
+        call.arguments[2] = if (annotations.isEmpty()) {
+          pika.emptyAnnotationsArray()
+        } else {
+          kotlin.arrayOf(pAnnotationClass.owner.defaultType, annotations)
+        }
+        call.arguments[3] = pika.typeDescriptor(property.resolvedType)
+        call.arguments[4] = IrConstImpl.int(-1, -1, irBuiltIns.intType, index)
+        call.arguments[5] = accessorExpr
+        call.arguments[6] = kotlin.bool(property.isVar)
+        call.arguments[7] = kotlin.bool(hasBackingField)
+        call.arguments[8] = kotlin.bool(property.isDelegated)
+      }
+    }
+
+    /**
+     * io.github.expo.pika.PIntrospectionData(...)
+     */
+    fun pIntrospectionData(
+      irClass: IrClass,
+      properties: List<IrExpression>,
+      functions: List<IrExpression>,
+      baseClassExpr: IrExpression?,
+    ): IrExpression {
+      val pIntrospectionDataClass = symbolFinder.pikaAPI.pIntrospectionData
+      val pAnnotationClass = symbolFinder.pikaAPI.pAnnotation
+      val pPropertyClass = symbolFinder.pikaAPI.pProperty
+      val pFunctionClass = symbolFinder.pikaAPI.pFunction
+
+      val constructor = pIntrospectionDataClass.owner.primaryConstructor
+        ?: error("PIntrospectionData must have a primary constructor")
+
+      val classAnnotations = irClass.annotations.map { annotation ->
+        pika.pAnnotation(annotation)
+      }
+
+      val ownerType = irClass.defaultType
+
+      // PIntrospectionData<OwnerType>
+      val pIntrospectionDataType = pIntrospectionDataClass.typeWith(ownerType)
+
+      // PProperty<OwnerType>
+      val pPropertyType = pPropertyClass.typeWith(ownerType)
+
+      val propertiesArrayExpr = if (properties.isEmpty()) {
+        kotlin.arrayOf(pPropertyType, emptyList())
+      } else {
+        kotlin.arrayOf(pPropertyType, properties)
+      }
+
+      // Annotations array
+      val annotationsExpr = if (classAnnotations.isEmpty()) {
+        pika.emptyAnnotationsArray()
+      } else {
+        kotlin.arrayOf(pAnnotationClass.owner.defaultType, classAnnotations)
+      }
+
+      // Functions array
+      val functionsExpr = if (functions.isEmpty()) {
+        pika.emptyFunctionsArray()
+      } else {
+        kotlin.arrayOf(pFunctionClass.owner.defaultType, functions)
+      }
+
+      return IrConstructorCallImpl(
+        startOffset = -1,
+        endOffset = -1,
+        type = pIntrospectionDataType,
+        symbol = constructor.symbol,
+        typeArgumentsCount = 1,
+        constructorTypeArgumentsCount = 1,
+        origin = null
+      ).also { call ->
+        call.typeArguments[0] = ownerType
+        call.arguments[0] = kotlin.javaClass(irClass.symbol)
+        call.arguments[1] = annotationsExpr
+        call.arguments[2] = propertiesArrayExpr
+        call.arguments[3] = functionsExpr
+        call.arguments[4] = baseClassExpr ?: kotlin.`null`()
+      }
+    }
+
+    fun isIntrospectable(type: IrType): IrExpression {
+      val simpleType = type as? IrSimpleType
+        ?: return kotlin.bool(false)
+      val irClass = simpleType.classOrNull?.owner
+        ?: return kotlin.bool(false)
+      return kotlin.bool(irClass.hasIntrospectableAnnotation(extraAnnotationClassIds))
+    }
+
+    fun introspectionOf(type: IrType, originalCall: IrCall): IrExpression {
+      val irClass = (type as? IrSimpleType)?.classOrNull?.owner ?: return originalCall
+      return buildIntrospectionCallFor(irClass, originalCall.startOffset, originalCall.endOffset)
+        ?: originalCall
+    }
+  }
+}

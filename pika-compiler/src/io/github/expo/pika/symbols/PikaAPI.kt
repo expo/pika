@@ -1,0 +1,33 @@
+package io.github.expo.pika.symbols
+
+import io.github.expo.pika.Identifiers
+import org.jetbrains.kotlin.name.ClassId
+import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
+
+object PikaAPI {
+  private val API_PACKAGE = FqName("io.github.expo.pika")
+
+  val PType = ClassId(API_PACKAGE, Name.identifier("PType"))
+
+  object PTypeDescriptor {
+    val Root = ClassId(API_PACKAGE, Name.identifier("PTypeDescriptor"))
+
+    val Concrete = ClassId(API_PACKAGE, FqName("PTypeDescriptor.Concrete"), isLocal = false)
+    val Parameterized = ClassId(API_PACKAGE, FqName("PTypeDescriptor.Concrete.Parameterized"), isLocal = false)
+    val Star = ClassId(API_PACKAGE, FqName("PTypeDescriptor.Star"), isLocal = false)
+  }
+
+  val PTypeDescriptorRegistry = ClassId(API_PACKAGE, Name.identifier(Identifiers.TYPE_DESCRIPTOR_REGISTRY_CLASS))
+
+  // Introspectable types
+  val Introspectable = ClassId(API_PACKAGE, Name.identifier(Identifiers.INTROSPECTABLE_INTERFACE_NAME))
+  val PVisibility = ClassId(API_PACKAGE, Name.identifier("PVisibility"))
+  val PProperty = ClassId(API_PACKAGE, Name.identifier("PProperty"))
+  val PFunction = ClassId(API_PACKAGE, Name.identifier("PFunction"))
+  val PAnnotation = ClassId(API_PACKAGE, Name.identifier("PAnnotation"))
+  val PIntrospectionData = ClassId(API_PACKAGE, Name.identifier("PIntrospectionData"))
+  val PPropertyAccessor = ClassId(API_PACKAGE, Name.identifier("PPropertyAccessor"))
+  val PIntrospectionProvider = ClassId(API_PACKAGE, Name.identifier("PIntrospectionProvider"))
+  val PEmptyArrays = ClassId(API_PACKAGE, Name.identifier("PEmptyArrays"))
+}

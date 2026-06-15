@@ -1,0 +1,27 @@
+// WITH_STDLIB
+package test
+
+import io.github.expo.pika.*
+
+@Introspectable
+class Person(val name: String)
+
+fun box(): String {
+  val person = Person("Alice")
+  val data = introspectionOf<Person>()
+
+  // Test kClass
+  if (data.jClass != Person::class.java) return "FAIL: kClass expected Person::class.java"
+
+  // Test properties count
+  if (data.properties.size != 1) return "FAIL: expected 1 property but got ${data.properties.size}"
+
+  // Test property name
+  val nameProp = data.properties.find { it.name == "name" }
+    ?: return "FAIL: name property not found"
+
+  // Test getter
+  if (nameProp.get(person) != "Alice") return "FAIL: getter expected Alice but got ${nameProp.get(person)}"
+
+  return "OK"
+}

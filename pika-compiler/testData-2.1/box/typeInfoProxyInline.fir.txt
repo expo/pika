@@ -1,0 +1,22 @@
+FILE: typeInfoProxyInline.kt
+    package test
+
+    public final inline fun <reified T> proxy(): R|io/github/expo/pika/PTypeDescriptor| {
+        ^proxy R|io/github/expo/pika/typeDescriptorOf|<R|T|>()
+    }
+    public final fun box(): R|kotlin/String| {
+        lval info: R|io/github/expo/pika/PTypeDescriptor| = R|test/proxy|<R|kotlin/String|>()
+        when () {
+            (R|<local>/info| !is R|io/github/expo/pika/PTypeDescriptor.Concrete|) ->  {
+                ^box String(FAIL: should be Concrete)
+            }
+        }
+
+        when () {
+            !=(R|<local>/info|.R|io/github/expo/pika/PTypeDescriptor.Concrete.pType|.R|io/github/expo/pika/PType.jClass|, <getClass>(Q|kotlin/String|).R|kotlin/jvm/java|<R|kotlin/String|>) ->  {
+                ^box <strcat>(String(FAIL: expected String::class.java got ), R|<local>/info|.R|io/github/expo/pika/PTypeDescriptor.Concrete.pType|.R|io/github/expo/pika/PType.jClass|)
+            }
+        }
+
+        ^box String(OK)
+    }

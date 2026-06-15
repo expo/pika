@@ -1,0 +1,95 @@
+FILE: typeInfoIntrospectableParameterized.kt
+    package test
+
+    @R|io/github/expo/pika/Introspectable|() public final class Person : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        public constructor(name: R|kotlin/String|): R|test/Person| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val name: R|kotlin/String| = R|<local>/name|
+            public get(): R|kotlin/String|
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+        public final object __Pika : R|kotlin/Any| {
+            private constructor(): R|test/Person.__Pika| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        lval listDescriptor: R|io/github/expo/pika/PTypeDescriptor| = R|io/github/expo/pika/typeDescriptorOf|<R|kotlin/collections/List<test/Person>|>()
+        when () {
+            (R|<local>/listDescriptor| !is R|io/github/expo/pika/PTypeDescriptor.Concrete.Parameterized|) ->  {
+                ^box String(FAIL: List<Person> should be Parameterized)
+            }
+        }
+
+        when () {
+            !=(R|<local>/listDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.pType|.R|io/github/expo/pika/PType.jClass|, <getClass>(Q|kotlin/collections/List|).R|kotlin/jvm/java|<R|kotlin/collections/List<*>|>) ->  {
+                ^box String(FAIL: List<Person> kClass)
+            }
+        }
+
+        when () {
+            !=(R|<local>/listDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.introspection|, Null(null)) ->  {
+                ^box String(FAIL: List introspection should be null)
+            }
+        }
+
+        when () {
+            !=(R|<local>/listDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.Parameterized.parameters|.R|SubstitutionOverride<kotlin/collections/List.size: R|kotlin/Int|>|, Int(1)) ->  {
+                ^box String(FAIL: List<Person> should have 1 type arg)
+            }
+        }
+
+        lval personArg: R|io/github/expo/pika/PTypeDescriptor.Concrete| = (R|<local>/listDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.Parameterized.parameters|.R|SubstitutionOverride<kotlin/collections/List.get: R|io/github/expo/pika/PTypeDescriptor|>|(Int(0)) as? R|io/github/expo/pika/PTypeDescriptor.Concrete|) ?: ^box String(FAIL: Person arg should be Concrete)
+        when () {
+            ==(R|<local>/personArg|.R|io/github/expo/pika/PTypeDescriptor.Concrete.introspection|, Null(null)) ->  {
+                ^box String(FAIL: Person arg introspection should not be null)
+            }
+        }
+
+        when () {
+            !=(R|<local>/personArg|.R|io/github/expo/pika/PTypeDescriptor.Concrete.introspection|!!.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.jClass: R|java/lang/Class<CapturedType(*)>|>|, <getClass>(Q|test/Person|).R|kotlin/jvm/java|<R|test/Person|>) ->  {
+                ^box String(FAIL: Person arg introspection.jClass)
+            }
+        }
+
+        lval mapDescriptor: R|io/github/expo/pika/PTypeDescriptor| = R|io/github/expo/pika/typeDescriptorOf|<R|kotlin/collections/Map<kotlin/String, test/Person>|>()
+        when () {
+            (R|<local>/mapDescriptor| !is R|io/github/expo/pika/PTypeDescriptor.Concrete.Parameterized|) ->  {
+                ^box String(FAIL: Map should be Parameterized)
+            }
+        }
+
+        when () {
+            !=(R|<local>/mapDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.introspection|, Null(null)) ->  {
+                ^box String(FAIL: Map introspection should be null)
+            }
+        }
+
+        when () {
+            !=(R|<local>/mapDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.Parameterized.parameters|.R|SubstitutionOverride<kotlin/collections/List.size: R|kotlin/Int|>|, Int(2)) ->  {
+                ^box String(FAIL: Map should have 2 type args)
+            }
+        }
+
+        lval keyArg: R|io/github/expo/pika/PTypeDescriptor.Concrete| = (R|<local>/mapDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.Parameterized.parameters|.R|SubstitutionOverride<kotlin/collections/List.get: R|io/github/expo/pika/PTypeDescriptor|>|(Int(0)) as? R|io/github/expo/pika/PTypeDescriptor.Concrete|) ?: ^box String(FAIL: key arg should be Concrete)
+        when () {
+            !=(R|<local>/keyArg|.R|io/github/expo/pika/PTypeDescriptor.Concrete.introspection|, Null(null)) ->  {
+                ^box String(FAIL: String key arg introspection should be null)
+            }
+        }
+
+        lval valueArg: R|io/github/expo/pika/PTypeDescriptor.Concrete| = (R|<local>/mapDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.Parameterized.parameters|.R|SubstitutionOverride<kotlin/collections/List.get: R|io/github/expo/pika/PTypeDescriptor|>|(Int(1)) as? R|io/github/expo/pika/PTypeDescriptor.Concrete|) ?: ^box String(FAIL: value arg should be Concrete)
+        when () {
+            ==(R|<local>/valueArg|.R|io/github/expo/pika/PTypeDescriptor.Concrete.introspection|, Null(null)) ->  {
+                ^box String(FAIL: Person value arg introspection should not be null)
+            }
+        }
+
+        ^box String(OK)
+    }

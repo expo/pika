@@ -1,0 +1,73 @@
+FILE: introspectableObject.kt
+    package test
+
+    @R|io/github/expo/pika/Introspectable|() public final object Singleton : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        private constructor(): R|test/Singleton| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val version: R|kotlin/String| = String(1.0)
+            public get(): R|kotlin/String|
+
+        public final var counter: R|kotlin/Int| = Int(0)
+            public get(): R|kotlin/Int|
+            public set(value: R|kotlin/Int|): R|kotlin/Unit|
+
+        public final fun increment(): R|kotlin/Unit| {
+             {
+                lval <unary>: R|kotlin/Int| = this@R|test/Singleton|.R|test/Singleton.counter|
+                this@R|test/Singleton|.R|test/Singleton.counter| = R|<local>/<unary>|.R|kotlin/Int.inc|()
+                R|<local>/<unary>|
+            }
+
+        }
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+    }
+    public final fun box(): R|kotlin/String| {
+        lval data: R|io/github/expo/pika/PIntrospectionData<test/Singleton>| = R|io/github/expo/pika/introspectionOf|<R|test/Singleton|>()
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.jClass: R|java/lang/Class<test/Singleton>|>|, <getClass>(Q|test/Singleton|).R|kotlin/jvm/java|<R|test/Singleton|>) ->  {
+                ^box String(FAIL: kClass)
+            }
+        }
+
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Singleton, *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|, Int(2)) ->  {
+                ^box String(FAIL: expected 2 properties)
+            }
+        }
+
+        lval versionProp: R|io/github/expo/pika/PProperty<test/Singleton, *>| = R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Singleton, *>>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PProperty<test/Singleton, *>|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PProperty<test/Singleton, *>|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|SubstitutionOverride<io/github/expo/pika/PProperty.name: R|kotlin/String|>|, String(version))
+        }
+        ) ?: ^box String(FAIL: version not found)
+        when () {
+            R|<local>/versionProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.isMutable: R|kotlin/Boolean|>| ->  {
+                ^box String(FAIL: version should be val)
+            }
+        }
+
+        lval counterProp: R|io/github/expo/pika/PProperty<test/Singleton, *>| = R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Singleton, *>>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PProperty<test/Singleton, *>|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PProperty<test/Singleton, *>|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|SubstitutionOverride<io/github/expo/pika/PProperty.name: R|kotlin/String|>|, String(counter))
+        }
+        ) ?: ^box String(FAIL: counter not found)
+        when () {
+            R|<local>/counterProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.isMutable: R|kotlin/Boolean|>|.R|kotlin/Boolean.not|() ->  {
+                ^box String(FAIL: counter should be var)
+            }
+        }
+
+        lval incrementFunc: R|io/github/expo/pika/PFunction| = R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.functions: R|kotlin/Array<io/github/expo/pika/PFunction>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PFunction|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PFunction|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|io/github/expo/pika/PFunction.name|, String(increment))
+        }
+        ) ?: ^box String(FAIL: increment not found)
+        when () {
+            !=(R|<local>/versionProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.get: R|CapturedType(*)|>|(Q|test/Singleton|), String(1.0)) ->  {
+                ^box String(FAIL: version getter)
+            }
+        }
+
+        ^box String(OK)
+    }

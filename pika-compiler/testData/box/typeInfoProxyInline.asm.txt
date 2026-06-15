@@ -1,0 +1,47 @@
+public final class test/TypeInfoProxyInlineKt : java/lang/Object {
+    public final static java.lang.String box() {
+        LABEL (L0)
+        LINENUMBER (11)
+          ICONST_0
+          ISTORE (1)
+        LABEL (L1)
+        LINENUMBER (17)
+          GETSTATIC (io/github/expo/pika/PTypeDescriptorRegistry, STRING, Lio/github/expo/pika/PTypeDescriptor$Concrete;)
+        LABEL (L2)
+        LINENUMBER (11)
+          ASTORE (0)
+        LABEL (L3)
+        LINENUMBER (12)
+          ALOAD (0)
+          INSTANCEOF (io/github/expo/pika/PTypeDescriptor$Concrete)
+          IFNE (L4)
+          LDC (FAIL: should be Concrete)
+          ARETURN
+        LABEL (L4)
+        LINENUMBER (13)
+          ALOAD (0)
+          INVOKEVIRTUAL (io/github/expo/pika/PTypeDescriptor$Concrete, getPType, ()Lio/github/expo/pika/PType;)
+          INVOKEVIRTUAL (io/github/expo/pika/PType, getJClass, ()Ljava/lang/Class;)
+          LDC (Ljava/lang/String;)
+          INVOKESTATIC (kotlin/jvm/internal/Intrinsics, areEqual, (Ljava/lang/Object;Ljava/lang/Object;)Z)
+          IFNE (L5)
+          NEW (java/lang/StringBuilder)
+          DUP
+          INVOKESPECIAL (java/lang/StringBuilder, <init>, ()V)
+          LDC (FAIL: expected String::class.java got )
+          INVOKEVIRTUAL (java/lang/StringBuilder, append, (Ljava/lang/String;)Ljava/lang/StringBuilder;)
+          ALOAD (0)
+          INVOKEVIRTUAL (io/github/expo/pika/PTypeDescriptor$Concrete, getPType, ()Lio/github/expo/pika/PType;)
+          INVOKEVIRTUAL (io/github/expo/pika/PType, getJClass, ()Ljava/lang/Class;)
+          INVOKEVIRTUAL (java/lang/StringBuilder, append, (Ljava/lang/Object;)Ljava/lang/StringBuilder;)
+          INVOKEVIRTUAL (java/lang/StringBuilder, toString, ()Ljava/lang/String;)
+          ARETURN
+        LABEL (L5)
+        LINENUMBER (14)
+          LDC (OK)
+          ARETURN
+        LABEL (L6)
+    }
+
+    public final static io.github.expo.pika.PTypeDescriptor proxy()
+}

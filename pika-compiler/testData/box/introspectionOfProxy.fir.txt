@@ -1,0 +1,47 @@
+FILE: introspectionOfProxy.kt
+    package test
+
+    @R|io/github/expo/pika/Introspectable|() public final class Foo : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        public constructor(x: R|kotlin/Int|): R|test/Foo| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val x: R|kotlin/Int| = R|<local>/x|
+            public get(): R|kotlin/Int|
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+        public final object __Pika : R|kotlin/Any| {
+            private constructor(): R|test/Foo.__Pika| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    public final inline fun <reified T> proxy(): R|io/github/expo/pika/PIntrospectionData<T & Any>| {
+        ^proxy R|io/github/expo/pika/introspectionOf|<R|T|>()
+    }
+    public final fun box(): R|kotlin/String| {
+        lval data: R|io/github/expo/pika/PIntrospectionData<test/Foo>| = R|test/proxy|<R|test/Foo|>()
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.jClass: R|java/lang/Class<test/Foo>|>|, <getClass>(Q|test/Foo|).R|kotlin/jvm/java|<R|test/Foo|>) ->  {
+                ^box <strcat>(String(FAIL: wrong kClass, got ), R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.jClass: R|java/lang/Class<test/Foo>|>|)
+            }
+        }
+
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Foo, *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|, Int(1)) ->  {
+                ^box <strcat>(String(FAIL: wrong property count, got ), R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Foo, *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|)
+            }
+        }
+
+        lval foo: R|test/Foo| = R|test/Foo.Foo|(Int(42))
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Foo, *>>|>|.R|SubstitutionOverride<kotlin/Array.get: R|io/github/expo/pika/PProperty<test/Foo, *>|>|(Int(0)).R|SubstitutionOverride<io/github/expo/pika/PProperty.get: R|CapturedType(*)|>|(R|<local>/foo|), Int(42)) ->  {
+                ^box <strcat>(String(FAIL: getter returned ), R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Foo, *>>|>|.R|SubstitutionOverride<kotlin/Array.get: R|io/github/expo/pika/PProperty<test/Foo, *>|>|(Int(0)).R|SubstitutionOverride<io/github/expo/pika/PProperty.get: R|CapturedType(*)|>|(R|<local>/foo|))
+            }
+        }
+
+        ^box String(OK)
+    }

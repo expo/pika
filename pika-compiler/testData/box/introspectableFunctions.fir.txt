@@ -1,0 +1,74 @@
+FILE: introspectableFunctions.kt
+    package test
+
+    @R|io/github/expo/pika/Introspectable|() public final class Calculator : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        public constructor(): R|test/Calculator| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val value: R|kotlin/Int| = Int(0)
+            public get(): R|kotlin/Int|
+
+        public final fun add(a: R|kotlin/Int|, b: R|kotlin/Int|): R|kotlin/Int| {
+            ^add R|<local>/a|.R|kotlin/Int.plus|(R|<local>/b|)
+        }
+
+        private final fun multiply(a: R|kotlin/Int|, b: R|kotlin/Int|): R|kotlin/Int| {
+            ^multiply R|<local>/a|.R|kotlin/Int.times|(R|<local>/b|)
+        }
+
+        internal final fun subtract(a: R|kotlin/Int|, b: R|kotlin/Int|): R|kotlin/Int| {
+            ^subtract R|<local>/a|.R|kotlin/Int.minus|(R|<local>/b|)
+        }
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+        public final object __Pika : R|kotlin/Any| {
+            private constructor(): R|test/Calculator.__Pika| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        lval calc: R|test/Calculator| = R|test/Calculator.Calculator|()
+        lval data: R|io/github/expo/pika/PIntrospectionData<test/Calculator>| = R|io/github/expo/pika/introspectionOf|<R|test/Calculator|>()
+        when () {
+            R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.functions: R|kotlin/Array<io/github/expo/pika/PFunction>|>|.R|kotlin/collections/isEmpty|<R|io/github/expo/pika/PFunction|>() ->  {
+                ^box String(FAIL: should have functions)
+            }
+        }
+
+        lval addFunc: R|io/github/expo/pika/PFunction| = R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.functions: R|kotlin/Array<io/github/expo/pika/PFunction>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PFunction|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PFunction|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|io/github/expo/pika/PFunction.name|, String(add))
+        }
+        ) ?: ^box String(FAIL: add function not found)
+        when () {
+            !=(R|<local>/addFunc|.R|io/github/expo/pika/PFunction.visibility|, Q|io/github/expo/pika/PVisibility|.R|io/github/expo/pika/PVisibility.PUBLIC|) ->  {
+                ^box String(FAIL: add should be PUBLIC)
+            }
+        }
+
+        lval multiplyFunc: R|io/github/expo/pika/PFunction| = R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.functions: R|kotlin/Array<io/github/expo/pika/PFunction>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PFunction|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PFunction|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|io/github/expo/pika/PFunction.name|, String(multiply))
+        }
+        ) ?: ^box String(FAIL: multiply function not found)
+        when () {
+            !=(R|<local>/multiplyFunc|.R|io/github/expo/pika/PFunction.visibility|, Q|io/github/expo/pika/PVisibility|.R|io/github/expo/pika/PVisibility.PRIVATE|) ->  {
+                ^box String(FAIL: multiply should be PRIVATE)
+            }
+        }
+
+        lval subtractFunc: R|io/github/expo/pika/PFunction| = R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.functions: R|kotlin/Array<io/github/expo/pika/PFunction>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PFunction|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PFunction|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|io/github/expo/pika/PFunction.name|, String(subtract))
+        }
+        ) ?: ^box String(FAIL: subtract function not found)
+        when () {
+            !=(R|<local>/subtractFunc|.R|io/github/expo/pika/PFunction.visibility|, Q|io/github/expo/pika/PVisibility|.R|io/github/expo/pika/PVisibility.INTERNAL|) ->  {
+                ^box String(FAIL: subtract should be INTERNAL)
+            }
+        }
+
+        ^box String(OK)
+    }

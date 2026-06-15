@@ -1,0 +1,69 @@
+FILE: introspectionOf.kt
+    package test
+
+    @R|io/github/expo/pika/Introspectable|() public final class Person : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        public constructor(name: R|kotlin/String|, age: R|kotlin/Int|): R|test/Person| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val name: R|kotlin/String| = R|<local>/name|
+            public get(): R|kotlin/String|
+
+        public final var age: R|kotlin/Int| = R|<local>/age|
+            public get(): R|kotlin/Int|
+            public set(value: R|kotlin/Int|): R|kotlin/Unit|
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+        public final object __Pika : R|kotlin/Any| {
+            private constructor(): R|test/Person.__Pika| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        lval person: R|test/Person| = R|test/Person.Person|(String(Alice), Int(30))
+        lval data: R|io/github/expo/pika/PIntrospectionData<test/Person>| = R|io/github/expo/pika/introspectionOf|<R|test/Person|>()
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.jClass: R|java/lang/Class<test/Person>|>|, <getClass>(Q|test/Person|).R|kotlin/jvm/java|<R|test/Person|>) ->  {
+                ^box String(FAIL: kClass should be Person)
+            }
+        }
+
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Person, *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|, Int(2)) ->  {
+                ^box <strcat>(String(FAIL: should have 2 properties, got ), R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Person, *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|)
+            }
+        }
+
+        lval nameProp: R|io/github/expo/pika/PProperty<test/Person, *>| = R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Person, *>>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PProperty<test/Person, *>|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PProperty<test/Person, *>|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|SubstitutionOverride<io/github/expo/pika/PProperty.name: R|kotlin/String|>|, String(name))
+        }
+        ) ?: ^box String(FAIL: name property not found)
+        lval ageProp: R|io/github/expo/pika/PProperty<test/Person, kotlin/Int>| = (R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Person, *>>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PProperty<test/Person, *>|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PProperty<test/Person, *>|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|SubstitutionOverride<io/github/expo/pika/PProperty.name: R|kotlin/String|>|, String(age))
+        }
+        ) as? R|io/github/expo/pika/PProperty<test/Person, kotlin/Int>|) ?: ^box String(FAIL: age property not found)
+        when () {
+            !=(R|<local>/nameProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.get: R|CapturedType(*)|>|(R|<local>/person|), String(Alice)) ->  {
+                ^box <strcat>(String(FAIL: name getter returned ), R|<local>/nameProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.get: R|CapturedType(*)|>|(R|<local>/person|))
+            }
+        }
+
+        when () {
+            !=(R|<local>/ageProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.get: R|kotlin/Int|>|(R|<local>/person|), Int(30)) ->  {
+                ^box <strcat>(String(FAIL: age getter returned ), R|<local>/ageProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.get: R|kotlin/Int|>|(R|<local>/person|))
+            }
+        }
+
+        R|<local>/ageProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.set: R|kotlin/Unit|>|(R|<local>/person|, Int(31))
+        when () {
+            !=(R|<local>/person|.R|test/Person.age|, Int(31)) ->  {
+                ^box String(FAIL: age setter didn't work)
+            }
+        }
+
+        ^box String(OK)
+    }

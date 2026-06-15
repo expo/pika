@@ -1,0 +1,165 @@
+FILE fqName:test fileName:/typeInfoNestedGenerics.kt
+  FUN name:box visibility:public modality:FINAL <> () returnType:kotlin.String
+    BLOCK_BODY
+      VAR name:nestedInfo type:io.github.expo.pika.PTypeDescriptor [val]
+        CALL 'public final fun getOrCreateParameterized (jClass: java.lang.Class<*>, isNullable: kotlin.Boolean, parameters: kotlin.collections.List<io.github.expo.pika.PTypeDescriptor>, introspection: io.github.expo.pika.PIntrospectionData<*>?): io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized declared in io.github.expo.pika.PTypeDescriptorRegistry' type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=null
+          $this: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:PTypeDescriptorRegistry modality:FINAL visibility:public superTypes:[kotlin.Any]' type=io.github.expo.pika.PTypeDescriptorRegistry
+          jClass: CALL 'public final fun <get-java> (): java.lang.Class<T of java.lang.Class> declared in kotlin.jvm' type=java.lang.Class<kotlin.collections.Map<K of kotlin.collections.Map, V of kotlin.collections.Map>> origin=null
+            $receiver: CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB INTERFACE name:Map modality:ABSTRACT visibility:public superTypes:[kotlin.Any]' type=kotlin.reflect.KClass<*>
+          isNullable: CONST Boolean type=kotlin.Boolean value=false
+          parameters: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> origin=INVOKE
+            <T>: io.github.expo.pika.PTypeDescriptor
+            elements: VARARG type=kotlin.Array<io.github.expo.pika.PTypeDescriptor> varargElementType=io.github.expo.pika.PTypeDescriptor
+              GET_FIELD 'FIELD IR_EXTERNAL_DECLARATION_STUB name:STRING type:io.github.expo.pika.PTypeDescriptor.Concrete visibility:public [final,static] declared in io.github.expo.pika.PTypeDescriptorRegistry' type=io.github.expo.pika.PTypeDescriptor.Concrete origin=null
+              CALL 'public final fun getOrCreateParameterized (jClass: java.lang.Class<*>, isNullable: kotlin.Boolean, parameters: kotlin.collections.List<io.github.expo.pika.PTypeDescriptor>, introspection: io.github.expo.pika.PIntrospectionData<*>?): io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized declared in io.github.expo.pika.PTypeDescriptorRegistry' type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=null
+                $this: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:PTypeDescriptorRegistry modality:FINAL visibility:public superTypes:[kotlin.Any]' type=io.github.expo.pika.PTypeDescriptorRegistry
+                jClass: CALL 'public final fun <get-java> (): java.lang.Class<T of java.lang.Class> declared in kotlin.jvm' type=java.lang.Class<kotlin.collections.List<E of kotlin.collections.List>> origin=null
+                  $receiver: CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB INTERFACE name:List modality:ABSTRACT visibility:public superTypes:[kotlin.collections.Collection<E of kotlin.collections.List>]' type=kotlin.reflect.KClass<*>
+                isNullable: CONST Boolean type=kotlin.Boolean value=false
+                parameters: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> origin=INVOKE
+                  <T>: io.github.expo.pika.PTypeDescriptor
+                  elements: VARARG type=kotlin.Array<io.github.expo.pika.PTypeDescriptor> varargElementType=io.github.expo.pika.PTypeDescriptor
+                    GET_FIELD 'FIELD IR_EXTERNAL_DECLARATION_STUB name:INT_NULLABLE type:io.github.expo.pika.PTypeDescriptor.Concrete visibility:public [final,static] declared in io.github.expo.pika.PTypeDescriptorRegistry' type=io.github.expo.pika.PTypeDescriptor.Concrete origin=null
+                introspection: CONST Null type=kotlin.Nothing? value=null
+          introspection: CONST Null type=kotlin.Nothing? value=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: TYPE_OP type=kotlin.Boolean origin=NOT_INSTANCEOF typeOperand=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized
+            GET_VAR 'val nestedInfo: io.github.expo.pika.PTypeDescriptor declared in test.box' type=io.github.expo.pika.PTypeDescriptor origin=null
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: nested should be Parameterized"
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              arg0: CALL 'public final fun <get-jClass> (): java.lang.Class<*> declared in io.github.expo.pika.PType' type=java.lang.Class<*> origin=GET_PROPERTY
+                $this: CALL 'public final fun <get-pType> (): io.github.expo.pika.PType declared in io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized' type=io.github.expo.pika.PType origin=GET_PROPERTY
+                  $this: TYPE_OP type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=IMPLICIT_CAST typeOperand=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized
+                    GET_VAR 'val nestedInfo: io.github.expo.pika.PTypeDescriptor declared in test.box' type=io.github.expo.pika.PTypeDescriptor origin=null
+              arg1: CALL 'public final fun <get-java> <T> (): java.lang.Class<T of kotlin.jvm.<get-java>> declared in kotlin.jvm' type=java.lang.Class<kotlin.collections.Map<*, *>> origin=GET_PROPERTY
+                <T>: kotlin.collections.Map<*, *>
+                $receiver: CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB INTERFACE name:Map modality:ABSTRACT visibility:public superTypes:[kotlin.Any]' type=kotlin.reflect.KClass<kotlin.collections.Map<*, *>>
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: nested kClass"
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              arg0: CALL 'public abstract fun <get-size> (): kotlin.Int declared in kotlin.collections.List' type=kotlin.Int origin=GET_PROPERTY
+                $this: CALL 'public final fun <get-parameters> (): kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> declared in io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized' type=kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> origin=GET_PROPERTY
+                  $this: TYPE_OP type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=IMPLICIT_CAST typeOperand=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized
+                    GET_VAR 'val nestedInfo: io.github.expo.pika.PTypeDescriptor declared in test.box' type=io.github.expo.pika.PTypeDescriptor origin=null
+              arg1: CONST Int type=kotlin.Int value=2
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: nested should have 2 type arguments"
+      VAR name:nestedKeyArg type:io.github.expo.pika.PTypeDescriptor.Concrete [val]
+        BLOCK type=io.github.expo.pika.PTypeDescriptor.Concrete origin=ELVIS
+          VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:io.github.expo.pika.PTypeDescriptor.Concrete? [val]
+            TYPE_OP type=io.github.expo.pika.PTypeDescriptor.Concrete? origin=SAFE_CAST typeOperand=io.github.expo.pika.PTypeDescriptor.Concrete
+              CALL 'public abstract fun get (index: kotlin.Int): E of kotlin.collections.List declared in kotlin.collections.List' type=io.github.expo.pika.PTypeDescriptor origin=GET_ARRAY_ELEMENT
+                $this: CALL 'public final fun <get-parameters> (): kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> declared in io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized' type=kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> origin=GET_PROPERTY
+                  $this: TYPE_OP type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=IMPLICIT_CAST typeOperand=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized
+                    GET_VAR 'val nestedInfo: io.github.expo.pika.PTypeDescriptor declared in test.box' type=io.github.expo.pika.PTypeDescriptor origin=null
+                index: CONST Int type=kotlin.Int value=0
+          WHEN type=io.github.expo.pika.PTypeDescriptor.Concrete origin=null
+            BRANCH
+              if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                arg0: GET_VAR 'val tmp_0: io.github.expo.pika.PTypeDescriptor.Concrete? declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete? origin=null
+                arg1: CONST Null type=kotlin.Nothing? value=null
+              then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+                CONST String type=kotlin.String value="FAIL: nested key should be Concrete"
+            BRANCH
+              if: CONST Boolean type=kotlin.Boolean value=true
+              then: GET_VAR 'val tmp_0: io.github.expo.pika.PTypeDescriptor.Concrete? declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete? origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              arg0: CALL 'public final fun <get-jClass> (): java.lang.Class<*> declared in io.github.expo.pika.PType' type=java.lang.Class<*> origin=GET_PROPERTY
+                $this: CALL 'public final fun <get-pType> (): io.github.expo.pika.PType declared in io.github.expo.pika.PTypeDescriptor.Concrete' type=io.github.expo.pika.PType origin=GET_PROPERTY
+                  $this: GET_VAR 'val nestedKeyArg: io.github.expo.pika.PTypeDescriptor.Concrete declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete origin=null
+              arg1: CALL 'public final fun <get-java> <T> (): java.lang.Class<T of kotlin.jvm.<get-java>> declared in kotlin.jvm' type=java.lang.Class<kotlin.String> origin=GET_PROPERTY
+                <T>: kotlin.String
+                $receiver: CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB CLASS name:String modality:FINAL visibility:public superTypes:[kotlin.Comparable<kotlin.String>; kotlin.CharSequence; java.io.Serializable]' type=kotlin.reflect.KClass<kotlin.String>
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: nested key kClass"
+      VAR name:nestedValueArg type:io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized [val]
+        BLOCK type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=ELVIS
+          VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized? [val]
+            TYPE_OP type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized? origin=SAFE_CAST typeOperand=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized
+              CALL 'public abstract fun get (index: kotlin.Int): E of kotlin.collections.List declared in kotlin.collections.List' type=io.github.expo.pika.PTypeDescriptor origin=GET_ARRAY_ELEMENT
+                $this: CALL 'public final fun <get-parameters> (): kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> declared in io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized' type=kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> origin=GET_PROPERTY
+                  $this: TYPE_OP type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=IMPLICIT_CAST typeOperand=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized
+                    GET_VAR 'val nestedInfo: io.github.expo.pika.PTypeDescriptor declared in test.box' type=io.github.expo.pika.PTypeDescriptor origin=null
+                index: CONST Int type=kotlin.Int value=1
+          WHEN type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=null
+            BRANCH
+              if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                arg0: GET_VAR 'val tmp_1: io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized? declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized? origin=null
+                arg1: CONST Null type=kotlin.Nothing? value=null
+              then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+                CONST String type=kotlin.String value="FAIL: nested value should be Parameterized"
+            BRANCH
+              if: CONST Boolean type=kotlin.Boolean value=true
+              then: GET_VAR 'val tmp_1: io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized? declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized? origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              arg0: CALL 'public final fun <get-jClass> (): java.lang.Class<*> declared in io.github.expo.pika.PType' type=java.lang.Class<*> origin=GET_PROPERTY
+                $this: CALL 'public final fun <get-pType> (): io.github.expo.pika.PType declared in io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized' type=io.github.expo.pika.PType origin=GET_PROPERTY
+                  $this: GET_VAR 'val nestedValueArg: io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=null
+              arg1: CALL 'public final fun <get-java> <T> (): java.lang.Class<T of kotlin.jvm.<get-java>> declared in kotlin.jvm' type=java.lang.Class<kotlin.collections.List<*>> origin=GET_PROPERTY
+                <T>: kotlin.collections.List<*>
+                $receiver: CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB INTERFACE name:List modality:ABSTRACT visibility:public superTypes:[kotlin.collections.Collection<E of kotlin.collections.List>]' type=kotlin.reflect.KClass<kotlin.collections.List<*>>
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: nested value kClass"
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              arg0: CALL 'public abstract fun <get-size> (): kotlin.Int declared in kotlin.collections.List' type=kotlin.Int origin=GET_PROPERTY
+                $this: CALL 'public final fun <get-parameters> (): kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> declared in io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized' type=kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> origin=GET_PROPERTY
+                  $this: GET_VAR 'val nestedValueArg: io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=null
+              arg1: CONST Int type=kotlin.Int value=1
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: nested value should have 1 type arg"
+      VAR name:nestedListArg type:io.github.expo.pika.PTypeDescriptor.Concrete [val]
+        BLOCK type=io.github.expo.pika.PTypeDescriptor.Concrete origin=ELVIS
+          VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:io.github.expo.pika.PTypeDescriptor.Concrete? [val]
+            TYPE_OP type=io.github.expo.pika.PTypeDescriptor.Concrete? origin=SAFE_CAST typeOperand=io.github.expo.pika.PTypeDescriptor.Concrete
+              CALL 'public abstract fun get (index: kotlin.Int): E of kotlin.collections.List declared in kotlin.collections.List' type=io.github.expo.pika.PTypeDescriptor origin=GET_ARRAY_ELEMENT
+                $this: CALL 'public final fun <get-parameters> (): kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> declared in io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized' type=kotlin.collections.List<io.github.expo.pika.PTypeDescriptor> origin=GET_PROPERTY
+                  $this: GET_VAR 'val nestedValueArg: io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete.Parameterized origin=null
+                index: CONST Int type=kotlin.Int value=0
+          WHEN type=io.github.expo.pika.PTypeDescriptor.Concrete origin=null
+            BRANCH
+              if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                arg0: GET_VAR 'val tmp_2: io.github.expo.pika.PTypeDescriptor.Concrete? declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete? origin=null
+                arg1: CONST Null type=kotlin.Nothing? value=null
+              then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+                CONST String type=kotlin.String value="FAIL: nested list arg should be Concrete"
+            BRANCH
+              if: CONST Boolean type=kotlin.Boolean value=true
+              then: GET_VAR 'val tmp_2: io.github.expo.pika.PTypeDescriptor.Concrete? declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete? origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              arg0: CALL 'public final fun <get-jClass> (): java.lang.Class<*> declared in io.github.expo.pika.PType' type=java.lang.Class<*> origin=GET_PROPERTY
+                $this: CALL 'public final fun <get-pType> (): io.github.expo.pika.PType declared in io.github.expo.pika.PTypeDescriptor.Concrete' type=io.github.expo.pika.PType origin=GET_PROPERTY
+                  $this: GET_VAR 'val nestedListArg: io.github.expo.pika.PTypeDescriptor.Concrete declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete origin=null
+              arg1: CALL 'public final fun <get-java> <T> (): java.lang.Class<T of kotlin.jvm.<get-java>> declared in kotlin.jvm' type=java.lang.Class<kotlin.Int> origin=GET_PROPERTY
+                <T>: kotlin.Int
+                $receiver: CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB CLASS name:Int modality:FINAL visibility:public superTypes:[kotlin.Number; kotlin.Comparable<kotlin.Int>; java.io.Serializable]' type=kotlin.reflect.KClass<kotlin.Int>
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: nested list arg kClass"
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=null
+            $this: CALL 'public final fun <get-isNullable> (): kotlin.Boolean declared in io.github.expo.pika.PTypeDescriptor.Concrete' type=kotlin.Boolean origin=GET_PROPERTY
+              $this: GET_VAR 'val nestedListArg: io.github.expo.pika.PTypeDescriptor.Concrete declared in test.box' type=io.github.expo.pika.PTypeDescriptor.Concrete origin=null
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: nested list arg should be nullable"
+      RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+        CONST String type=kotlin.String value="OK"

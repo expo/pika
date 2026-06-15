@@ -1,0 +1,1 @@
+../../testData/box/introspectableAnnotations.kt

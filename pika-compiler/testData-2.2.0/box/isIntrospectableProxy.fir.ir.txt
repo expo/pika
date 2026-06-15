@@ -1,0 +1,194 @@
+FILE fqName:test fileName:/isIntrospectableProxy.kt
+  CLASS CLASS name:Bar modality:FINAL visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:test.Bar
+    PROPERTY name:x visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'x: kotlin.Int declared in test.Bar.<init>' type=kotlin.Int origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-x> visibility:public modality:FINAL returnType:kotlin.Int
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:test.Bar
+        correspondingProperty: PROPERTY name:x visibility:public modality:FINAL [val]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-x> (): kotlin.Int declared in test.Bar'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+              receiver: GET_VAR '<this>: test.Bar declared in test.Bar.<get-x>' type=test.Bar origin=null
+    CONSTRUCTOR visibility:public returnType:test.Bar [primary]
+      VALUE_PARAMETER kind:Regular name:x index:0 type:kotlin.Int
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Bar modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+  CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[kotlin.Any; io.github.expo.pika.PIntrospectionProvider]
+    annotations:
+      Introspectable
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:test.Foo
+    PROPERTY name:x visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:internal
+        EXPRESSION_BODY
+          GET_VAR 'x: kotlin.Int declared in test.Foo.<init>' type=kotlin.Int origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-x> visibility:public modality:FINAL returnType:kotlin.Int
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:test.Foo
+        correspondingProperty: PROPERTY name:x visibility:public modality:FINAL [val]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-x> (): kotlin.Int declared in test.Foo'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:internal' type=kotlin.Int origin=null
+              receiver: GET_VAR '<this>: test.Foo declared in test.Foo.<get-x>' type=test.Foo origin=null
+    CLASS GENERATED[io.github.expo.pika.fir.IntrospectableDeclarationGeneratorKey] OBJECT name:__Pika modality:FINAL visibility:public superTypes:[kotlin.Any; io.github.expo.pika.PPropertyAccessor]
+      thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:test.Foo.__Pika
+      FIELD name:__pika$IntrospectionData type:io.github.expo.pika.PIntrospectionData<test.Foo> visibility:public [final,static]
+        EXPRESSION_BODY
+          CONSTRUCTOR_CALL 'public constructor <init> (jClass: java.lang.Class<OwnerType of io.github.expo.pika.PIntrospectionData>, annotations: kotlin.Array<io.github.expo.pika.PAnnotation>, properties: kotlin.Array<io.github.expo.pika.PProperty<OwnerType of io.github.expo.pika.PIntrospectionData, *>>, functions: kotlin.Array<io.github.expo.pika.PFunction>, baseClass: io.github.expo.pika.PIntrospectionData<*>?) declared in io.github.expo.pika.PIntrospectionData' type=io.github.expo.pika.PIntrospectionData<test.Foo> origin=null
+            TYPE_ARG OwnerType: test.Foo
+            ARG jClass: CALL 'public final fun <get-java> ($receiver: kotlin.reflect.KClass<*>): java.lang.Class<T of java.lang.Class> declared in kotlin.jvm' type=java.lang.Class<test.Foo> origin=null
+              ARG $receiver: CLASS_REFERENCE 'CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[kotlin.Any; io.github.expo.pika.PIntrospectionProvider]' type=kotlin.reflect.KClass<*>
+            ARG annotations: CALL 'public final fun arrayOf <T> (vararg elements: T of kotlin.arrayOf): kotlin.Array<T of kotlin.arrayOf> declared in kotlin' type=kotlin.Array<io.github.expo.pika.PAnnotation> origin=null
+              TYPE_ARG T: io.github.expo.pika.PAnnotation
+              ARG elements: VARARG type=kotlin.Array<io.github.expo.pika.PAnnotation> varargElementType=io.github.expo.pika.PAnnotation
+                CONSTRUCTOR_CALL 'public constructor <init> (jClass: java.lang.Class<*>, arguments: kotlin.collections.Map<kotlin.String, kotlin.Any?>) declared in io.github.expo.pika.PAnnotation' type=io.github.expo.pika.PAnnotation origin=null
+                  ARG jClass: CALL 'public final fun <get-java> ($receiver: kotlin.reflect.KClass<*>): java.lang.Class<T of java.lang.Class> declared in kotlin.jvm' type=java.lang.Class<io.github.expo.pika.Introspectable> origin=null
+                    ARG $receiver: CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB ANNOTATION_CLASS name:Introspectable modality:OPEN visibility:public superTypes:[kotlin.Annotation]' type=kotlin.reflect.KClass<*>
+                  ARG arguments: CALL 'public final fun emptyMap <K, V> (): kotlin.collections.Map<K of kotlin.collections.emptyMap, V of kotlin.collections.emptyMap> declared in kotlin.collections' type=kotlin.collections.Map<kotlin.String, kotlin.Any?> origin=null
+                    TYPE_ARG K: kotlin.String
+                    TYPE_ARG V: kotlin.Any?
+            ARG properties: CALL 'public final fun arrayOf <T> (vararg elements: T of kotlin.arrayOf): kotlin.Array<T of kotlin.arrayOf> declared in kotlin' type=kotlin.Array<io.github.expo.pika.PProperty<test.Foo>> origin=null
+              TYPE_ARG T: io.github.expo.pika.PProperty<test.Foo>
+              ARG elements: VARARG type=kotlin.Array<io.github.expo.pika.PProperty<test.Foo>> varargElementType=io.github.expo.pika.PProperty<test.Foo>
+                CONSTRUCTOR_CALL 'internal constructor <init> (name: kotlin.String, visibility: io.github.expo.pika.PVisibility, annotations: kotlin.Array<io.github.expo.pika.PAnnotation>, type: io.github.expo.pika.PTypeDescriptor, index: kotlin.Int, accessor: io.github.expo.pika.PPropertyAccessor, isMutable: kotlin.Boolean, hasBackingField: kotlin.Boolean, isDelegated: kotlin.Boolean) declared in io.github.expo.pika.PProperty' type=io.github.expo.pika.PProperty<test.Foo> origin=null
+                  TYPE_ARG OwnerType: test.Foo
+                  ARG name: CONST String type=kotlin.String value="x"
+                  ARG visibility: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:PUBLIC' type=io.github.expo.pika.PVisibility
+                  ARG annotations: GET_FIELD 'FIELD IR_EXTERNAL_DECLARATION_STUB name:EMPTY_ANNOTATIONS type:kotlin.Array<io.github.expo.pika.PAnnotation> visibility:public [final,static] declared in io.github.expo.pika.PEmptyArrays' type=kotlin.Array<io.github.expo.pika.PAnnotation> origin=null
+                  ARG type: GET_FIELD 'FIELD IR_EXTERNAL_DECLARATION_STUB name:INT type:io.github.expo.pika.PTypeDescriptor.Concrete visibility:public [final,static] declared in io.github.expo.pika.PTypeDescriptorRegistry' type=io.github.expo.pika.PTypeDescriptor.Concrete origin=null
+                  ARG index: CONST Int type=kotlin.Int value=0
+                  ARG accessor: GET_OBJECT 'CLASS GENERATED[io.github.expo.pika.fir.IntrospectableDeclarationGeneratorKey] OBJECT name:__Pika modality:FINAL visibility:public superTypes:[kotlin.Any; io.github.expo.pika.PPropertyAccessor]' type=test.Foo.__Pika
+                  ARG isMutable: CONST Boolean type=kotlin.Boolean value=false
+                  ARG hasBackingField: CONST Boolean type=kotlin.Boolean value=true
+                  ARG isDelegated: CONST Boolean type=kotlin.Boolean value=false
+            ARG functions: GET_FIELD 'FIELD IR_EXTERNAL_DECLARATION_STUB name:EMPTY_FUNCTIONS type:kotlin.Array<io.github.expo.pika.PFunction> visibility:public [final,static] declared in io.github.expo.pika.PEmptyArrays' type=kotlin.Array<io.github.expo.pika.PFunction> origin=null
+            ARG baseClass: CONST Null type=kotlin.Nothing? value=null
+      CONSTRUCTOR GENERATED[io.github.expo.pika.fir.IntrospectableDeclarationGeneratorKey] visibility:private returnType:test.Foo.__Pika [primary]
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS GENERATED[io.github.expo.pika.fir.IntrospectableDeclarationGeneratorKey] OBJECT name:__Pika modality:FINAL visibility:public superTypes:[kotlin.Any; io.github.expo.pika.PPropertyAccessor]' type=kotlin.Unit
+      FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+        VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+        overridden:
+          public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+      FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+        overridden:
+          public open fun hashCode (): kotlin.Int declared in kotlin.Any
+      FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+        overridden:
+          public open fun toString (): kotlin.String declared in kotlin.Any
+      FUN name:__pika$PropertyGet visibility:public modality:OPEN returnType:kotlin.Any?
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:test.Foo.__Pika
+        VALUE_PARAMETER kind:Regular name:instance index:1 type:kotlin.Any?
+        VALUE_PARAMETER kind:Regular name:index index:2 type:kotlin.Int
+        overridden:
+          public abstract fun __pika$PropertyGet (instance: kotlin.Any?, index: kotlin.Int): kotlin.Any? declared in io.github.expo.pika.PPropertyAccessor
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun __pika$PropertyGet (instance: kotlin.Any?, index: kotlin.Int): kotlin.Any? declared in test.Foo.__Pika'
+            WHEN type=kotlin.Any? origin=null
+              BRANCH
+                if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                  ARG arg0: GET_VAR 'index: kotlin.Int declared in test.Foo.__Pika.__pika$PropertyGet' type=kotlin.Int origin=null
+                  ARG arg1: CONST Int type=kotlin.Int value=0
+                then: CALL 'public final fun <get-x> (): kotlin.Int declared in test.Foo' type=kotlin.Int origin=GET_PROPERTY
+                  ARG <this>: TYPE_OP type=test.Foo origin=CAST typeOperand=test.Foo
+                    GET_VAR 'instance: kotlin.Any? declared in test.Foo.__Pika.__pika$PropertyGet' type=kotlin.Any? origin=null
+              BRANCH
+                if: CONST Boolean type=kotlin.Boolean value=true
+                then: THROW type=kotlin.Nothing
+                  CONSTRUCTOR_CALL 'public constructor <init> (p0: @[FlexibleNullability] kotlin.String?) declared in java.lang.IndexOutOfBoundsException' type=java.lang.IndexOutOfBoundsException origin=null
+                    ARG p0: STRING_CONCATENATION type=kotlin.String
+                      GET_VAR 'index: kotlin.Int declared in test.Foo.__Pika.__pika$PropertyGet' type=kotlin.Int origin=null
+      FUN name:__pika$PropertySet visibility:public modality:OPEN returnType:kotlin.Unit
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:test.Foo.__Pika
+        VALUE_PARAMETER kind:Regular name:instance index:1 type:kotlin.Any?
+        VALUE_PARAMETER kind:Regular name:index index:2 type:kotlin.Int
+        VALUE_PARAMETER kind:Regular name:value index:3 type:kotlin.Any?
+        overridden:
+          public abstract fun __pika$PropertySet (instance: kotlin.Any?, index: kotlin.Int, value: kotlin.Any?): kotlin.Unit declared in io.github.expo.pika.PPropertyAccessor
+        BLOCK_BODY
+          WHEN type=kotlin.Unit origin=null
+            BRANCH
+              if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                ARG arg0: GET_VAR 'index: kotlin.Int declared in test.Foo.__Pika.__pika$PropertySet' type=kotlin.Int origin=null
+                ARG arg1: CONST Int type=kotlin.Int value=0
+              then: SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:internal' type=kotlin.Unit origin=null
+                receiver: TYPE_OP type=test.Foo origin=CAST typeOperand=test.Foo
+                  GET_VAR 'instance: kotlin.Any? declared in test.Foo.__Pika.__pika$PropertySet' type=kotlin.Any? origin=null
+                value: TYPE_OP type=kotlin.Int origin=CAST typeOperand=kotlin.Int
+                  GET_VAR 'value: kotlin.Any? declared in test.Foo.__Pika.__pika$PropertySet' type=kotlin.Any? origin=null
+            BRANCH
+              if: CONST Boolean type=kotlin.Boolean value=true
+              then: THROW type=kotlin.Nothing
+                CONSTRUCTOR_CALL 'public constructor <init> (p0: @[FlexibleNullability] kotlin.String?) declared in java.lang.IndexOutOfBoundsException' type=java.lang.IndexOutOfBoundsException origin=null
+                  ARG p0: STRING_CONCATENATION type=kotlin.String
+                    GET_VAR 'index: kotlin.Int declared in test.Foo.__Pika.__pika$PropertySet' type=kotlin.Int origin=null
+    CONSTRUCTOR visibility:public returnType:test.Foo [primary]
+      VALUE_PARAMETER kind:Regular name:x index:0 type:kotlin.Int
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[kotlin.Any; io.github.expo.pika.PIntrospectionProvider]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in io.github.expo.pika.PIntrospectionProvider
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+        public open fun hashCode (): kotlin.Int declared in io.github.expo.pika.PIntrospectionProvider
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+        public open fun toString (): kotlin.String declared in io.github.expo.pika.PIntrospectionProvider
+    FUN GENERATED[io.github.expo.pika.fir.IntrospectableDeclarationGeneratorKey] name:getIntrospectionData visibility:public modality:OPEN returnType:io.github.expo.pika.PIntrospectionData<*>
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:test.Foo
+      overridden:
+        public abstract fun getIntrospectionData (): io.github.expo.pika.PIntrospectionData<*> declared in io.github.expo.pika.PIntrospectionProvider
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public open fun getIntrospectionData (): io.github.expo.pika.PIntrospectionData<*> declared in test.Foo'
+          GET_FIELD 'FIELD name:__pika$IntrospectionData type:io.github.expo.pika.PIntrospectionData<test.Foo> visibility:public [final,static] declared in test.Foo.__Pika' type=io.github.expo.pika.PIntrospectionData<test.Foo> origin=null
+  FUN name:box visibility:public modality:FINAL returnType:kotlin.String
+    BLOCK_BODY
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=null
+            ARG <this>: CALL 'public final fun proxy <T> (): kotlin.Boolean declared in test' type=kotlin.Boolean origin=null
+              TYPE_ARG T: test.Foo
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: expected true for @Introspectable class through proxy"
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun proxy <T> (): kotlin.Boolean declared in test' type=kotlin.Boolean origin=null
+            TYPE_ARG T: test.Bar
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+            CONST String type=kotlin.String value="FAIL: expected false for non-@Introspectable class through proxy"
+      RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in test'
+        CONST String type=kotlin.String value="OK"
+  FUN name:proxy visibility:public modality:FINAL returnType:kotlin.Boolean [inline]
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any] reified:true
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun proxy <T> (): kotlin.Boolean declared in test'
+        CALL 'public final fun isIntrospectable <T> (): kotlin.Boolean declared in io.github.expo.pika' type=kotlin.Boolean origin=null
+          TYPE_ARG T: T of test.proxy

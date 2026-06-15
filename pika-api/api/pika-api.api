@@ -1,0 +1,129 @@
+public abstract interface annotation class io/github/expo/pika/Introspectable : java/lang/annotation/Annotation {
+}
+
+public final class io/github/expo/pika/IntrospectionOfKt {
+	public static final fun introspectionOf ()Lio/github/expo/pika/PIntrospectionData;
+	public static final fun introspectionOf (Ljava/lang/Object;)Lio/github/expo/pika/PIntrospectionData;
+	public static final fun throwNonReifiedIntrospectionOfError ()Lio/github/expo/pika/PIntrospectionData;
+}
+
+public final class io/github/expo/pika/IsIntrospectableKt {
+	public static final fun isIntrospectable ()Z
+	public static final fun throwNonReifiedIsIntrospectableError ()Z
+}
+
+public final class io/github/expo/pika/PAnnotation {
+	public fun <init> (Ljava/lang/Class;Ljava/util/Map;)V
+	public final fun getArguments ()Ljava/util/Map;
+	public final fun getJClass ()Ljava/lang/Class;
+}
+
+public final class io/github/expo/pika/PEmptyArrays {
+	public static final field EMPTY_ANNOTATIONS [Lio/github/expo/pika/PAnnotation;
+	public static final field EMPTY_FUNCTIONS [Lio/github/expo/pika/PFunction;
+	public static final field INSTANCE Lio/github/expo/pika/PEmptyArrays;
+}
+
+public final class io/github/expo/pika/PFunction {
+	public fun <init> (Ljava/lang/String;Lio/github/expo/pika/PVisibility;)V
+	public final fun getName ()Ljava/lang/String;
+	public final fun getVisibility ()Lio/github/expo/pika/PVisibility;
+}
+
+public final class io/github/expo/pika/PIntrospectionData {
+	public fun <init> (Ljava/lang/Class;[Lio/github/expo/pika/PAnnotation;[Lio/github/expo/pika/PProperty;[Lio/github/expo/pika/PFunction;Lio/github/expo/pika/PIntrospectionData;)V
+	public final fun getAnnotations ()[Lio/github/expo/pika/PAnnotation;
+	public final fun getBaseClass ()Lio/github/expo/pika/PIntrospectionData;
+	public final fun getFunctions ()[Lio/github/expo/pika/PFunction;
+	public final fun getJClass ()Ljava/lang/Class;
+	public final fun getProperties ()[Lio/github/expo/pika/PProperty;
+}
+
+public abstract interface class io/github/expo/pika/PIntrospectionProvider {
+	public abstract fun getIntrospectionData ()Lio/github/expo/pika/PIntrospectionData;
+}
+
+public final class io/github/expo/pika/PProperty {
+	public fun <init> (Ljava/lang/String;Lio/github/expo/pika/PVisibility;[Lio/github/expo/pika/PAnnotation;Lio/github/expo/pika/PTypeDescriptor;ILio/github/expo/pika/PPropertyAccessor;ZZZ)V
+	public final fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun getAnnotations ()[Lio/github/expo/pika/PAnnotation;
+	public final fun getHasBackingField ()Z
+	public final fun getIndex ()I
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Lio/github/expo/pika/PTypeDescriptor;
+	public final fun getVisibility ()Lio/github/expo/pika/PVisibility;
+	public final fun isDelegated ()Z
+	public final fun isMutable ()Z
+	public final fun set (Ljava/lang/Object;Ljava/lang/Object;)V
+}
+
+public abstract interface class io/github/expo/pika/PPropertyAccessor {
+	public abstract fun __pika$PropertyGet (Ljava/lang/Object;I)Ljava/lang/Object;
+	public abstract fun __pika$PropertySet (Ljava/lang/Object;ILjava/lang/Object;)V
+}
+
+public final class io/github/expo/pika/PType {
+	public fun <init> (Ljava/lang/Class;)V
+	public final fun getJClass ()Ljava/lang/Class;
+	public final fun getKClass ()Lkotlin/reflect/KClass;
+}
+
+public abstract interface class io/github/expo/pika/PTypeDescriptor {
+}
+
+public class io/github/expo/pika/PTypeDescriptor$Concrete : io/github/expo/pika/PTypeDescriptor {
+	public fun <init> (Lio/github/expo/pika/PType;ZLio/github/expo/pika/PIntrospectionData;)V
+	public synthetic fun <init> (Lio/github/expo/pika/PType;ZLio/github/expo/pika/PIntrospectionData;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getIntrospection ()Lio/github/expo/pika/PIntrospectionData;
+	public final fun getPType ()Lio/github/expo/pika/PType;
+	public final fun isNullable ()Z
+}
+
+public final class io/github/expo/pika/PTypeDescriptor$Concrete$Parameterized : io/github/expo/pika/PTypeDescriptor$Concrete {
+	public fun <init> (Lio/github/expo/pika/PType;ZLjava/util/List;Lio/github/expo/pika/PIntrospectionData;)V
+	public synthetic fun <init> (Lio/github/expo/pika/PType;ZLjava/util/List;Lio/github/expo/pika/PIntrospectionData;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getParameters ()Ljava/util/List;
+}
+
+public final class io/github/expo/pika/PTypeDescriptor$Star : io/github/expo/pika/PTypeDescriptor {
+	public static final field INSTANCE Lio/github/expo/pika/PTypeDescriptor$Star;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/github/expo/pika/PTypeDescriptorRegistry {
+	public static final field BOOLEAN Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field BOOLEAN_NULLABLE Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field DOUBLE Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field DOUBLE_NULLABLE Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field FLOAT Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field FLOAT_NULLABLE Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field INSTANCE Lio/github/expo/pika/PTypeDescriptorRegistry;
+	public static final field INT Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field INT_NULLABLE Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field LONG Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field LONG_NULLABLE Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field SHORT Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field SHORT_NULLABLE Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field STRING Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final field STRING_NULLABLE Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final fun getOrCreateConcrete (Ljava/lang/Class;ZLio/github/expo/pika/PIntrospectionData;)Lio/github/expo/pika/PTypeDescriptor$Concrete;
+	public static final fun getOrCreateParameterized (Ljava/lang/Class;ZLjava/util/List;Lio/github/expo/pika/PIntrospectionData;)Lio/github/expo/pika/PTypeDescriptor$Concrete$Parameterized;
+}
+
+public final class io/github/expo/pika/PVisibility : java/lang/Enum {
+	public static final field INTERNAL Lio/github/expo/pika/PVisibility;
+	public static final field PRIVATE Lio/github/expo/pika/PVisibility;
+	public static final field PROTECTED Lio/github/expo/pika/PVisibility;
+	public static final field PUBLIC Lio/github/expo/pika/PVisibility;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/github/expo/pika/PVisibility;
+	public static fun values ()[Lio/github/expo/pika/PVisibility;
+}
+
+public final class io/github/expo/pika/TypeDescriptorOfKt {
+	public static final fun throwNonReifiedTypeDescriptorError ()Lio/github/expo/pika/PTypeDescriptor;
+	public static final fun typeDescriptorOf ()Lio/github/expo/pika/PTypeDescriptor;
+}
+

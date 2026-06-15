@@ -1,0 +1,59 @@
+FILE: introspectableEmpty.kt
+    package test
+
+    @R|io/github/expo/pika/Introspectable|() public final class Empty : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        public constructor(): R|test/Empty| {
+            super<R|kotlin/Any|>()
+        }
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+        public final object __Pika : R|kotlin/Any| {
+            private constructor(): R|test/Empty.__Pika| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        lval empty: R|test/Empty| = R|test/Empty.Empty|()
+        lval data: R|io/github/expo/pika/PIntrospectionData<test/Empty>| = R|io/github/expo/pika/introspectionOf|<R|test/Empty|>()
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.jClass: R|java/lang/Class<test/Empty>|>|, <getClass>(Q|test/Empty|).R|kotlin/jvm/java|<R|test/Empty|>) ->  {
+                ^box String(FAIL: kClass)
+            }
+        }
+
+        when () {
+            R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Empty, *>>|>|.R|kotlin/collections/isNotEmpty|<R|io/github/expo/pika/PProperty<test/Empty, *>|>() ->  {
+                ^box String(FAIL: should have no properties)
+            }
+        }
+
+        when () {
+            R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.functions: R|kotlin/Array<io/github/expo/pika/PFunction>|>|.R|kotlin/collections/isNotEmpty|<R|io/github/expo/pika/PFunction|>() ->  {
+                ^box String(FAIL: should have no functions)
+            }
+        }
+
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.annotations: R|kotlin/Array<io/github/expo/pika/PAnnotation>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|, Int(1)) ->  {
+                ^box String(FAIL: should have 1 annotation (@Introspectable))
+            }
+        }
+
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.annotations: R|kotlin/Array<io/github/expo/pika/PAnnotation>|>|.R|SubstitutionOverride<kotlin/Array.get: R|io/github/expo/pika/PAnnotation|>|(Int(0)).R|io/github/expo/pika/PAnnotation.jClass|, <getClass>(Q|io/github/expo/pika/Introspectable|).R|kotlin/jvm/java|<R|io/github/expo/pika/Introspectable|>) ->  {
+                ^box String(FAIL: annotation should be @Introspectable)
+            }
+        }
+
+        when () {
+            !=(R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.baseClass: R|io/github/expo/pika/PIntrospectionData<*>?|>|, Null(null)) ->  {
+                ^box String(FAIL: should have no baseClass)
+            }
+        }
+
+        ^box String(OK)
+    }

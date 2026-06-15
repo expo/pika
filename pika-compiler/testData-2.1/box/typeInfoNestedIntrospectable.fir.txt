@@ -1,0 +1,114 @@
+FILE: typeInfoNestedIntrospectable.kt
+    package test
+
+    @R|io/github/expo/pika/Introspectable|() public final class Address : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        public constructor(city: R|kotlin/String|, zip: R|kotlin/String|): R|test/Address| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val city: R|kotlin/String| = R|<local>/city|
+            public get(): R|kotlin/String|
+
+        public final val zip: R|kotlin/String| = R|<local>/zip|
+            public get(): R|kotlin/String|
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+        public final object __Pika : R|kotlin/Any| {
+            private constructor(): R|test/Address.__Pika| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    @R|io/github/expo/pika/Introspectable|() public final class Person : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        public constructor(name: R|kotlin/String|, address: R|test/Address|): R|test/Person| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val name: R|kotlin/String| = R|<local>/name|
+            public get(): R|kotlin/String|
+
+        public final val address: R|test/Address| = R|<local>/address|
+            public get(): R|test/Address|
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+        public final object __Pika : R|kotlin/Any| {
+            private constructor(): R|test/Person.__Pika| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        lval personDescriptor: R|io/github/expo/pika/PTypeDescriptor| = R|io/github/expo/pika/typeDescriptorOf|<R|test/Person|>()
+        when () {
+            (R|<local>/personDescriptor| !is R|io/github/expo/pika/PTypeDescriptor.Concrete|) ->  {
+                ^box String(FAIL: Person should be Concrete)
+            }
+        }
+
+        lval personData: R|io/github/expo/pika/PIntrospectionData<*>| = R|<local>/personDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.introspection| ?: ^box String(FAIL: Person introspection should not be null)
+        when () {
+            !=(R|<local>/personData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<CapturedType(*), *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|, Int(2)) ->  {
+                ^box <strcat>(String(FAIL: should have 2 properties, got ), R|<local>/personData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<CapturedType(*), *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|)
+            }
+        }
+
+        lval addressProp: R|io/github/expo/pika/PProperty<out kotlin/Any, *>| = R|<local>/personData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<CapturedType(*), *>>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PProperty<out kotlin/Any, *>|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PProperty<out kotlin/Any, *>|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|SubstitutionOverride<io/github/expo/pika/PProperty.name: R|kotlin/String|>|, String(address))
+        }
+        ) ?: ^box String(FAIL: address property not found)
+        lval addressTypeDescriptor: R|io/github/expo/pika/PTypeDescriptor.Concrete| = (R|<local>/addressProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.type: R|io/github/expo/pika/PTypeDescriptor|>| as? R|io/github/expo/pika/PTypeDescriptor.Concrete|) ?: ^box String(FAIL: address property type should be Concrete)
+        when () {
+            !=(R|<local>/addressTypeDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.pType|.R|io/github/expo/pika/PType.jClass|, <getClass>(Q|test/Address|).R|kotlin/jvm/java|<R|test/Address|>) ->  {
+                ^box String(FAIL: address type kClass should be Address)
+            }
+        }
+
+        lval addressData: R|io/github/expo/pika/PIntrospectionData<*>| = R|<local>/addressTypeDescriptor|.R|io/github/expo/pika/PTypeDescriptor.Concrete.introspection| ?: ^box String(FAIL: address property type introspection should not be null)
+        when () {
+            !=(R|<local>/addressData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.jClass: R|java/lang/Class<CapturedType(*)>|>|, <getClass>(Q|test/Address|).R|kotlin/jvm/java|<R|test/Address|>) ->  {
+                ^box String(FAIL: nested introspection.jClass should be Address)
+            }
+        }
+
+        when () {
+            !=(R|<local>/addressData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<CapturedType(*), *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|, Int(2)) ->  {
+                ^box <strcat>(String(FAIL: Address should have 2 properties, got ), R|<local>/addressData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<CapturedType(*), *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|)
+            }
+        }
+
+        lval cityProp: R|io/github/expo/pika/PProperty<out kotlin/Any, *>| = R|<local>/addressData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<CapturedType(*), *>>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PProperty<out kotlin/Any, *>|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PProperty<out kotlin/Any, *>|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|SubstitutionOverride<io/github/expo/pika/PProperty.name: R|kotlin/String|>|, String(city))
+        }
+        ) ?: ^box String(FAIL: city property not found in nested introspection)
+        lval directAddressData: R|io/github/expo/pika/PIntrospectionData<test/Address>| = R|io/github/expo/pika/introspectionOf|<R|test/Address|>()
+        when () {
+            !=(R|<local>/addressData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.jClass: R|java/lang/Class<CapturedType(*)>|>|, R|<local>/directAddressData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.jClass: R|java/lang/Class<test/Address>|>|) ->  {
+                ^box String(FAIL: nested kClass mismatch with introspectionOf)
+            }
+        }
+
+        when () {
+            !=(R|<local>/addressData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<CapturedType(*), *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|, R|<local>/directAddressData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Address, *>>|>|.R|SubstitutionOverride<kotlin/Array.size: R|kotlin/Int|>|) ->  {
+                ^box String(FAIL: nested properties size mismatch with introspectionOf)
+            }
+        }
+
+        lval nameProp: R|io/github/expo/pika/PProperty<out kotlin/Any, *>| = R|<local>/personData|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<CapturedType(*), *>>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PProperty<out kotlin/Any, *>|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PProperty<out kotlin/Any, *>|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|SubstitutionOverride<io/github/expo/pika/PProperty.name: R|kotlin/String|>|, String(name))
+        }
+        ) ?: ^box String(FAIL: name property not found)
+        lval nameType: R|io/github/expo/pika/PTypeDescriptor.Concrete| = (R|<local>/nameProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.type: R|io/github/expo/pika/PTypeDescriptor|>| as? R|io/github/expo/pika/PTypeDescriptor.Concrete|) ?: ^box String(FAIL: name property type should be Concrete)
+        when () {
+            !=(R|<local>/nameType|.R|io/github/expo/pika/PTypeDescriptor.Concrete.introspection|, Null(null)) ->  {
+                ^box String(FAIL: String property type introspection should be null)
+            }
+        }
+
+        ^box String(OK)
+    }

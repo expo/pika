@@ -1,0 +1,99 @@
+import com.vanniktech.maven.publish.GradlePlugin
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SonatypeHost
+
+plugins {
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.buildconfig)
+  alias(libs.plugins.gradle.plugin)
+  id("com.vanniktech.maven.publish") version "0.30.0"
+}
+
+kotlin {
+  jvmToolchain(11)
+}
+
+val pluginGroup = "io.github.expo.pika"
+val pikaVersion: String = libs.versions.pika.get()
+
+group = pluginGroup
+version = pikaVersion
+
+sourceSets {
+  main {
+    java.setSrcDirs(listOf("src"))
+    resources.setSrcDirs(listOf("resources"))
+  }
+  test {
+    java.setSrcDirs(listOf("test"))
+    resources.setSrcDirs(listOf("testResources"))
+  }
+}
+
+dependencies {
+  compileOnly(libs.kotlin.gradle.plugin)
+  compileOnly(libs.kotlin.gradle.plugin.api)
+  testImplementation(libs.kotlin.test.junit5)
+}
+
+buildConfig {
+  packageName(pluginGroup)
+
+  buildConfigField("String", "KOTLIN_PLUGIN_ID", "\"$pluginGroup\"")
+  buildConfigField("String", "KOTLIN_PLUGIN_GROUP", "\"$pluginGroup\"")
+  buildConfigField("String", "KOTLIN_PLUGIN_NAME", "\"pika-compiler\"")
+  buildConfigField("String", "PIKA_VERSION", "\"$pikaVersion\"")
+  buildConfigField(
+    type = "String",
+    name = "ANNOTATIONS_LIBRARY_COORDINATES",
+    expression = "\"$pluginGroup:pika-api:$pikaVersion\""
+  )
+}
+
+gradlePlugin {
+  plugins {
+    create("PikaPlugin") {
+      id = pluginGroup
+      displayName = "PikaPlugin"
+      description = "PikaPlugin"
+      implementationClass = "io.github.expo.pika.PikaGradlePlugin"
+    }
+  }
+}
+
+mavenPublishing {
+  publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+
+  // Only sign when signing credentials are available (CI environment)
+  if (project.findProperty("signingInMemoryKey") != null) {
+    signAllPublications()
+  }
+
+  configure(GradlePlugin(JavadocJar.Empty(), sourcesJar = true))
+
+  pom {
+    name = "Pika Gradle Plugin"
+    description = "Gradle plugin for Pika - Kotlin compiler plugin for generating type information in the compile time"
+    inceptionYear = "2025"
+    url = "https://github.com/expo/pika"
+    licenses {
+      license {
+        name = "The MIT License"
+        url = "https://opensource.org/license/mit"
+        distribution = "https://opensource.org/license/mit"
+      }
+    }
+    developers {
+      developer {
+        id = "expo"
+        name = "Expo"
+        url = "https://github.com/expo"
+      }
+    }
+    scm {
+      url = "https://github.com/expo/pika"
+      connection = "scm:git:git://github.com/expo/pika.git"
+      developerConnection = "scm:git:ssh://github.com/expo/pika.git"
+    }
+  }
+}

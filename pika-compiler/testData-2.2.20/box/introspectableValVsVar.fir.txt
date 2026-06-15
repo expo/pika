@@ -1,0 +1,50 @@
+FILE: introspectableValVsVar.kt
+    package test
+
+    @R|io/github/expo/pika/Introspectable|() public final class Person : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        public constructor(name: R|kotlin/String|, age: R|kotlin/Int|): R|test/Person| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val name: R|kotlin/String| = R|<local>/name|
+            public get(): R|kotlin/String|
+
+        public final var age: R|kotlin/Int| = R|<local>/age|
+            public get(): R|kotlin/Int|
+            public set(value: R|kotlin/Int|): R|kotlin/Unit|
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+        public final object __Pika : R|kotlin/Any| {
+            private constructor(): R|test/Person.__Pika| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        lval person: R|test/Person| = R|test/Person.Person|(String(Alice), Int(30))
+        lval data: R|io/github/expo/pika/PIntrospectionData<test/Person>| = R|io/github/expo/pika/introspectionOf|<R|test/Person|>()
+        lval nameProp: R|io/github/expo/pika/PProperty<test/Person, *>| = R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Person, *>>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PProperty<test/Person, *>|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PProperty<test/Person, *>|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|SubstitutionOverride<io/github/expo/pika/PProperty.name: R|kotlin/String|>|, String(name))
+        }
+        ) ?: ^box String(FAIL: name not found)
+        lval ageProp: R|io/github/expo/pika/PProperty<test/Person, *>| = R|<local>/data|.R|SubstitutionOverride<io/github/expo/pika/PIntrospectionData.properties: R|kotlin/Array<io/github/expo/pika/PProperty<test/Person, *>>|>|.R|kotlin/collections/find|<R|io/github/expo/pika/PProperty<test/Person, *>|>(<L> = find@fun <anonymous>(it: R|io/github/expo/pika/PProperty<test/Person, *>|): R|kotlin/Boolean| <inline=Inline, kind=UNKNOWN>  {
+            ^ ==(R|<local>/it|.R|SubstitutionOverride<io/github/expo/pika/PProperty.name: R|kotlin/String|>|, String(age))
+        }
+        ) ?: ^box String(FAIL: age not found)
+        when () {
+            R|<local>/nameProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.isMutable: R|kotlin/Boolean|>| ->  {
+                ^box String(FAIL: name (val) should not be mutable)
+            }
+        }
+
+        when () {
+            R|<local>/ageProp|.R|SubstitutionOverride<io/github/expo/pika/PProperty.isMutable: R|kotlin/Boolean|>|.R|kotlin/Boolean.not|() ->  {
+                ^box String(FAIL: age (var) should be mutable)
+            }
+        }
+
+        ^box String(OK)
+    }

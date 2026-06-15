@@ -1,0 +1,48 @@
+FILE: isIntrospectableProxy.kt
+    package test
+
+    @R|io/github/expo/pika/Introspectable|() public final class Foo : R|kotlin/Any|, R|io/github/expo/pika/PIntrospectionProvider| {
+        public constructor(x: R|kotlin/Int|): R|test/Foo| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val x: R|kotlin/Int| = R|<local>/x|
+            public get(): R|kotlin/Int|
+
+        public open fun getIntrospectionData(): R|io/github/expo/pika/PIntrospectionData<*>|
+
+        public final object __Pika : R|kotlin/Any| {
+            private constructor(): R|test/Foo.__Pika| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    public final class Bar : R|kotlin/Any| {
+        public constructor(x: R|kotlin/Int|): R|test/Bar| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val x: R|kotlin/Int| = R|<local>/x|
+            public get(): R|kotlin/Int|
+
+    }
+    public final inline fun <reified T : R|kotlin/Any|> proxy(): R|kotlin/Boolean| {
+        ^proxy R|io/github/expo/pika/isIntrospectable|<R|T|>()
+    }
+    public final fun box(): R|kotlin/String| {
+        when () {
+            R|test/proxy|<R|test/Foo|>().R|kotlin/Boolean.not|() ->  {
+                ^box String(FAIL: expected true for @Introspectable class through proxy)
+            }
+        }
+
+        when () {
+            R|test/proxy|<R|test/Bar|>() ->  {
+                ^box String(FAIL: expected false for non-@Introspectable class through proxy)
+            }
+        }
+
+        ^box String(OK)
+    }
