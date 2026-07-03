@@ -1,3 +1,4 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
 
@@ -18,6 +19,12 @@ allprojects {
 subprojects {
   plugins.withId("com.vanniktech.maven.publish") {
     extensions.configure<MavenPublishBaseExtension> {
+      configure(AndroidSingleVariantLibrary(
+        variant = "release",
+        sourcesJar = true,
+        publishJavadocJar = false,
+      ))
+
       publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
 
       // Only sign when signing credentials are available (CI environment)
