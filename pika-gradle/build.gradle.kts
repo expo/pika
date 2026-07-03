@@ -78,7 +78,7 @@ mavenPublishing {
     signAllPublications()
   }
 
-  configure(GradlePlugin(JavadocJar.Empty(), sourcesJar = true))
+  configure(GradlePlugin(JavadocJar.None(), sourcesJar = true))
 
   pom {
     name = "Pika Gradle Plugin"

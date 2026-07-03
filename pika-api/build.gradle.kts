@@ -32,7 +32,7 @@ mavenPublishing {
     signAllPublications()
   }
 
-  configure(KotlinJvm(JavadocJar.Empty(), sourcesJar = true))
+  configure(KotlinJvm(JavadocJar.None(), sourcesJar = true))
 
   pom {
     name = "pika-api"
