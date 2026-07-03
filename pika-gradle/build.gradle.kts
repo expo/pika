@@ -17,6 +17,11 @@ kotlin {
   }
 }
 
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
+}
+
 val pluginGroup = "io.github.expo.pika"
 val pikaVersion: String = libs.versions.pika.get()
 

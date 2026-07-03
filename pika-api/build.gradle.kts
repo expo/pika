@@ -20,6 +20,11 @@ kotlin {
   }
 }
 
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
+}
+
 mavenPublishing {
   publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
 

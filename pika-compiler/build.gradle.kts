@@ -122,6 +122,11 @@ kotlin {
   }
 }
 
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
+}
+
 val generateTests by tasks.registering(JavaExec::class) {
   inputs.dir(layout.projectDirectory.dir("testData"))
     .withPropertyName("testData")
