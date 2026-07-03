@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
   alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.buildconfig)
@@ -108,8 +110,9 @@ tasks.test {
 }
 
 kotlin {
-  jvmToolchain(11)
+  jvmToolchain(17)
   compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_11)
     optIn.add("org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi")
     // DirectDeclarationsAccess is required for accessing FIR declarations directly in 2.2.x+
     // The explicit @OptIn annotations in the code use the local FirCompat annotation for source compatibility

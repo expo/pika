@@ -1,6 +1,7 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   alias(libs.plugins.kotlin.jvm)
@@ -13,7 +14,10 @@ version = libs.versions.pika.get()
 
 kotlin {
   explicitApi()
-  jvmToolchain(11)
+  jvmToolchain(17)
+  compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_11)
+  }
 }
 
 mavenPublishing {

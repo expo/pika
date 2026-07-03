@@ -1,6 +1,7 @@
 import com.vanniktech.maven.publish.GradlePlugin
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   alias(libs.plugins.kotlin.jvm)
@@ -10,7 +11,10 @@ plugins {
 }
 
 kotlin {
-  jvmToolchain(11)
+  jvmToolchain(17)
+  compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_11)
+  }
 }
 
 val pluginGroup = "io.github.expo.pika"
