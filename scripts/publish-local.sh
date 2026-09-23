@@ -5,7 +5,6 @@
 #   ./scripts/publish-local.sh <kotlin-version>
 #
 # Example:
-#   ./scripts/publish-local.sh 2.1.20
 #   ./scripts/publish-local.sh 2.2.0
 #   ./scripts/publish-local.sh 2.3.20
 

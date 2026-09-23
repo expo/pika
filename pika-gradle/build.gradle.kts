@@ -1,13 +1,13 @@
 import com.vanniktech.maven.publish.GradlePlugin
 import com.vanniktech.maven.publish.JavadocJar
-import com.vanniktech.maven.publish.SonatypeHost
+import com.vanniktech.maven.publish.SourcesJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.buildconfig)
   alias(libs.plugins.gradle.plugin)
-  id("com.vanniktech.maven.publish") version "0.30.0"
+  alias(libs.plugins.vanniktech.mavenPublish)
 }
 
 kotlin {
@@ -71,14 +71,14 @@ gradlePlugin {
 }
 
 mavenPublishing {
-  publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+  publishToMavenCentral(automaticRelease = true)
 
   // Only sign when signing credentials are available (CI environment)
   if (project.findProperty("signingInMemoryKey") != null) {
     signAllPublications()
   }
 
-  configure(GradlePlugin(JavadocJar.None(), sourcesJar = true))
+  configure(GradlePlugin(JavadocJar.Empty(), SourcesJar.Sources()))
 
   pom {
     name = "Pika Gradle Plugin"

@@ -11,28 +11,35 @@ plugins {
 val kotlinVersionStr: String = libs.versions.kotlin.asProvider().get()
 val kotlinMinorVersion = kotlinVersionStr.split(".").take(2).joinToString(".")
 
-// Classify into a single tier used by testFixtures and testData directories.
-// mainSourceDir has a different split (2.1 vs 2.2 vs 2.3 vs 2.3.20+).
-val fixturesTier = when {
-  kotlinMinorVersion >= "2.3" -> "2.3+"
-  kotlinVersionStr >= "2.2.20" -> "2.2.20"
-  kotlinMinorVersion >= "2.2" -> "2.2.0"
-  else -> "2.1"
-}
+// Each compatibility axis picks the newest variant the current Kotlin release satisfies.
 
+// Main sources: compiler APIs the plugin uses.
 val mainSourceDir = when {
   kotlinVersionStr >= "2.3.20" -> "src-2.3.20+"
   kotlinVersionStr >= "2.3.0" -> "src-2.3"
-  kotlinMinorVersion >= "2.2" -> "src-2.2"  // 2.2.x has DirectDeclarationsAccess but old getContainingClassSymbol location
-  else -> "src-2.1"  // 2.1.x only
+  else -> "src-2.2"  // 2.2.x has DirectDeclarationsAccess but old getContainingClassSymbol location
 }
 
-val testFixturesSourceDir = "test-fixtures-$fixturesTier"
-
-val testDataDir = if (fixturesTier == "2.3+") {
-  "testData"
+// GenerateTests.kt: the JUnit5 generator DSL moved packages in 2.3.0.
+val generatorSourceDir = if (kotlinMinorVersion >= "2.3") {
+  "test-fixtures-2.3.0"
 } else {
-  "testData-$fixturesTier"
+  "test-fixtures-2.2.0"
+}
+
+// AbstractJvmBoxTest.kt: 2.4.20 dropped AbstractFirBlackBoxCodegenTestBase.
+val runnerSourceDir = if (kotlinVersionStr >= "2.4.20") {
+  "test-fixtures-runner-2.4.20"
+} else {
+  "test-fixtures-runner-2.2.0"
+}
+
+// Golden dumps: the FIR/IR text changes between compiler releases. `testData` is the 2.3.x baseline.
+val testDataDir = when {
+  kotlinVersionStr >= "2.4.0" -> "testData-2.4.0"
+  kotlinMinorVersion >= "2.3" -> "testData"
+  kotlinVersionStr >= "2.2.20" -> "testData-2.2.20"
+  else -> "testData-2.2.0"
 }
 
 sourceSets {
@@ -43,7 +50,8 @@ sourceSets {
   }
   testFixtures {
     java.setSrcDirs(listOf("test-fixtures"))
-    kotlin.srcDir(testFixturesSourceDir)
+    kotlin.srcDir(generatorSourceDir)
+    kotlin.srcDir(runnerSourceDir)
   }
   test {
     java.setSrcDirs(listOf("test", "test-gen"))
@@ -107,6 +115,13 @@ tasks.test {
 
   systemProperty("idea.ignore.disabled.plugins", "true")
   systemProperty("idea.home.path", rootDir)
+
+  // Regenerate the golden .txt dumps in the active testData tier instead of asserting against them:
+  //   ./gradlew :pika-compiler:test -PkotlinVersion=<version> -PupdateTestData
+  if (providers.gradleProperty("updateTestData").isPresent) {
+    systemProperty("kotlin.test.update.test.data", "true")
+    outputs.upToDateWhen { false }
+  }
 }
 
 kotlin {
@@ -116,9 +131,7 @@ kotlin {
     optIn.add("org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi")
     // DirectDeclarationsAccess is required for accessing FIR declarations directly in 2.2.x+
     // The explicit @OptIn annotations in the code use the local FirCompat annotation for source compatibility
-    if (kotlinMinorVersion >= "2.2") {
-      optIn.add("org.jetbrains.kotlin.fir.declarations.DirectDeclarationsAccess")
-    }
+    optIn.add("org.jetbrains.kotlin.fir.declarations.DirectDeclarationsAccess")
   }
 }
 
@@ -128,7 +141,7 @@ java {
 }
 
 val generateTests by tasks.registering(JavaExec::class) {
-  inputs.dir(layout.projectDirectory.dir("testData"))
+  inputs.dir(layout.projectDirectory.dir(testDataDir))
     .withPropertyName("testData")
     .withPathSensitivity(PathSensitivity.RELATIVE)
   outputs.dir(layout.projectDirectory.dir("test-gen"))
@@ -137,6 +150,7 @@ val generateTests by tasks.registering(JavaExec::class) {
   classpath = sourceSets.testFixtures.get().runtimeClasspath
   mainClass.set("io.github.expo.pika.GenerateTestsKt")
   workingDir = rootDir
+  args("pika-compiler/test-gen", "pika-compiler/$testDataDir")
 }
 
 tasks.compileTestKotlin {

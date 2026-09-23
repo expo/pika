@@ -200,7 +200,9 @@ class IRPoet(
      * KClassJavaProperty intrinsic strips the KClass wrap, leaving a bare LDC.
      */
     fun javaClass(classSymbol: IrClassSymbol): IrExpression {
-      val classType = classSymbol.owner.defaultType
+      // Star-projected, like `List::class` in source: the class's own type parameters are not in
+      // scope at the call site, and Kotlin 2.4.20 validates plugin IR for exactly that.
+      val classType = classSymbol.starProjectedType
       val kClassReference = IrClassReferenceImpl(
         startOffset = -1,
         endOffset = -1,

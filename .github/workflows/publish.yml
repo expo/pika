@@ -47,22 +47,27 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY_CONTENTS }}
 
+  kotlin-versions:
+    name: Kotlin versions
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.read.outputs.versions }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Read gradle/kotlin-versions.txt
+        id: read
+        run: echo "versions=$(jq -R -s -c 'split("\n") | map(select(length > 0))' gradle/kotlin-versions.txt)" >> "$GITHUB_OUTPUT"
+
   publish-compiler:
-    name: Publish pika-compiler to Maven Central
-    needs: publish-universal
+    name: Publish pika-compiler for Kotlin ${{ matrix.kotlin-version }}
+    needs: [publish-universal, kotlin-versions]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        kotlin-version:
-          - "2.1.20"
-          - "2.2.0"
-          - "2.2.10"
-          - "2.2.20"
-          - "2.2.21"
-          - "2.3.0"
-          - "2.3.10"
-          - "2.3.20"
+        kotlin-version: ${{ fromJSON(needs.kotlin-versions.outputs.versions) }}
 
     steps:
       - name: Check out code

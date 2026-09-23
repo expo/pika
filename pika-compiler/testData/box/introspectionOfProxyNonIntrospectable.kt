@@ -1,3 +1,4 @@
+// FIR_IDENTICAL
 // WITH_STDLIB
 // Regression test: calling introspectionOf<T>() through a proxy inline function where T is
 // substituted with a non-@Introspectable type should compile without a bytecode stack underflow

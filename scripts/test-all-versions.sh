@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
-# Test all supported Kotlin versions
+# Test all supported Kotlin versions — every release in gradle/kotlin-versions.txt, the same
+# list the CI matrix uses (see .github/workflows/compiler-tests.yml).
 # Usage: ./test-all-versions.sh [--quick]
 #   --quick: Only run sample, skip tests
 
-VERSIONS="2.1.20 2.2.0 2.2.10 2.2.20 2.2.21 2.3.0 2.3.10 2.3.20"
+cd "$(dirname "$0")/.."
+
+VERSIONS="$(tr '\n' ' ' < gradle/kotlin-versions.txt)"
 QUICK_MODE=false
 
-if [[ "$1" == "--quick" ]]; then
+if [[ "${1:-}" == "--quick" ]]; then
   QUICK_MODE=true
 fi
 

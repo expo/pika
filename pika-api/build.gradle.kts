@@ -1,12 +1,12 @@
 import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SourcesJar
 import com.vanniktech.maven.publish.KotlinJvm
-import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.kotlin.binary.compatibility.validator)
-  id("com.vanniktech.maven.publish") version "0.30.0"
+  alias(libs.plugins.vanniktech.mavenPublish)
 }
 
 group = "io.github.expo.pika"
@@ -26,13 +26,13 @@ java {
 }
 
 mavenPublishing {
-  publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+  publishToMavenCentral(automaticRelease = true)
 
   if (project.findProperty("signingInMemoryKey") != null) {
     signAllPublications()
   }
 
-  configure(KotlinJvm(JavadocJar.None(), sourcesJar = true))
+  configure(KotlinJvm(JavadocJar.Empty(), SourcesJar.Sources()))
 
   pom {
     name = "pika-api"
